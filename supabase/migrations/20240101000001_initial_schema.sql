@@ -1,12 +1,9 @@
 -- Search Kit Library Schema
 -- Phase 1: search_kits and user_favorites tables
 
--- Enable UUID extension
-CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
-
 -- search_kits table: stores all generated Search Kits
 CREATE TABLE search_kits (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   role_title TEXT NOT NULL,
   company TEXT,
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
@@ -23,7 +20,7 @@ CREATE INDEX idx_search_kits_created_at ON search_kits (created_at DESC);
 
 -- user_favorites table: stores user favorites (localStorage UUID based)
 CREATE TABLE user_favorites (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id TEXT NOT NULL,
   search_kit_id UUID NOT NULL REFERENCES search_kits(id) ON DELETE CASCADE,
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
