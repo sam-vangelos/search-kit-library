@@ -1,0 +1,223 @@
+{
+  "role_title": "Frontier Data Lead – RL",
+  "company": "Turing",
+  "created_by": "Sam Vangelos",
+  "input_jd": "Frontier Data Lead – RL: End-to-end ownership of RL environment projects for frontier AI labs, spanning environment design, task generation, reward/verifier design, quality assurance, and client delivery.",
+  "input_intake": null,
+  "kit_data": {
+    "version": "5.1",
+    "role_title": "Frontier Data Lead – RL",
+    "role_summary": "End-to-end ownership of RL environment projects for frontier AI labs, spanning environment design, task generation, reward/verifier design, quality assurance, and client delivery.",
+    "role_details": {
+      "core_function": "Own end-to-end RL environment projects for frontier AI labs, delivering environments that improve model capabilities through post-training.",
+      "technical_domain": "RL environments for software engineering agents, UI/browser-use agents, and MCP-based function-calling agents across enterprise domains.",
+      "key_deliverables": "Environment code, database schemas, seed data, task curricula, verifiers/reward functions, agent trajectories, and eval reports.",
+      "stakeholders": "Researchers at OpenAI, Anthropic, Google DeepMind, Microsoft AI, Amazon, Apple. Internal teams of engineers, SMEs, and data ops."
+    },
+    "archetypes": [
+      {
+        "name": "The Lab Post-Training Lead",
+        "summary": "Built RLHF/DPO pipelines at a frontier lab or major tech company",
+        "recipe": [
+          { "block": "RL & Post-Training", "components": "Methods (Established) + Tools (Recent)" },
+          { "block": "Evaluation & Verification", "components": "Methods (Specific) + Tools (Established)" }
+        ],
+        "why": "This person built RL training pipelines, not just used them. Methods (Established) catches core RLHF/DPO vocabulary — anyone doing post-training uses these terms. Tools (Recent) filters for hands-on work with current infrastructure; mentions of OpenRLHF, Axolotl, or vLLM mean they're building pipelines, not just reading papers. Evaluation (Methods Specific) adds reward modeling and verifier design signal — without this, you'd catch fine-tuning practitioners who lack the measurement rigor this role requires."
+      },
+      {
+        "name": "The Agent Environment Builder",
+        "summary": "Designed sandboxes, harnesses, or simulation infra for agent evaluation",
+        "recipe": [
+          { "block": "Agent Systems", "components": "Methods (Established) + Tools (Recent)" },
+          { "block": "Environment Design", "components": "Methods (Specific) + Tools (Established)" }
+        ],
+        "why": "Agent Systems (Established) alone catches anyone who's touched LangChain. Adding Environment Design (Methods Specific) filters for people who build agent sandboxes, not just deploy agents. Terms like \"task harness,\" \"environment reset,\" and \"episode boundary\" signal someone who understands the infrastructure needed to train agents. The intersection means: designed task curricula, built verification harnesses, or created simulation infrastructure."
+      },
+      {
+        "name": "The Eval Infrastructure Engineer",
+        "summary": "Built model evaluation pipelines, benchmarks, or leaderboard infrastructure",
+        "recipe": [
+          { "block": "Evaluation & Verification", "components": "Methods (Established) + Tools (Recent)" },
+          { "block": "Data Operations", "components": "Methods (Specific) + Concepts (Established)" }
+        ],
+        "why": "Evaluation (Methods Established) catches anyone familiar with LLM eval vocabulary, but Tools (Recent) filters for people running evals at scale — mentions of lm-evaluation-harness or Inspect AI signal operational experience. Data Operations adds the pipeline engineering dimension. The intersection identifies someone who can both design rigorous evaluations and build the infrastructure to run them continuously."
+      },
+      {
+        "name": "The Data Platform Tech Lead",
+        "summary": "Led annotation/data teams and built ML data infrastructure at scale",
+        "recipe": [
+          { "block": "Data Operations", "components": "Methods (Established) + Tools (Established)" },
+          { "block": "RL & Post-Training", "components": "Concepts (Broad) + Methods (Established)" }
+        ],
+        "why": "Data Operations (Established) catches people who've built annotation pipelines, but alone returns general ML data engineers. Adding RL & Post-Training ensures they understand the training context. The intersection identifies someone who can build data infrastructure specifically designed for RL training: trajectory collection, preference annotation at scale, and quality control for training data."
+      }
+    ],
+    "blocks": [
+      {
+        "number": 1,
+        "title": "RL & Post-Training",
+        "sub_blocks": [
+          {
+            "type": "Concepts",
+            "clusters": [
+              { "label": "Broad", "terms": "(\"reinforcement learning\" OR \"RL training\" OR \"RL systems\" OR \"reward-based learning\" OR \"policy learning\" OR \"sequential decision making\" OR \"learning from feedback\" OR \"feedback-driven learning\" OR \"trial and error learning\")" },
+              { "label": "Established", "terms": "(\"post-training\" OR \"post training\" OR \"alignment training\" OR \"model alignment\" OR \"AI alignment\" OR \"safety training\" OR \"instruction tuning\" OR \"instruction-tuning\" OR \"fine-tuning\" OR \"finetuning\" OR \"LLM training\" OR \"foundation model training\")" },
+              { "label": "Recent", "terms": "(\"constitutional AI\" OR \"CAI training\" OR \"RLAIF\" OR \"RL from AI feedback\" OR \"scalable oversight\" OR \"weak-to-strong generalization\" OR \"capability elicitation\" OR \"inference-time compute\" OR \"test-time training\" OR \"o1-style training\")" },
+              { "label": "Specific", "terms": "(\"preference optimization\" OR \"preference tuning\" OR \"reward hacking mitigation\" OR \"reward gaming\" OR \"policy collapse\" OR \"mode collapse in RL\" OR \"KL divergence constraint\" OR \"KL penalty\" OR \"reference model\" OR \"SFT baseline\")" }
+            ]
+          },
+          {
+            "type": "Methods",
+            "clusters": [
+              { "label": "Broad", "terms": "(\"policy optimization\" OR \"policy gradient\" OR \"reward modeling\" OR \"reward learning\" OR \"value function\" OR \"value estimation\" OR \"advantage estimation\" OR \"temporal difference\" OR \"TD learning\" OR \"actor-critic\" OR \"on-policy\" OR \"off-policy\")" },
+              { "label": "Established", "terms": "(\"RLHF\" OR \"reinforcement learning from human feedback\" OR \"human feedback training\" OR \"preference-based training\" OR \"preference learning\" OR \"PPO\" OR \"proximal policy optimization\" OR \"DPO\" OR \"direct preference optimization\" OR \"RLHF pipeline\" OR \"reward model training\")" },
+              { "label": "Recent", "terms": "(\"IPO\" OR \"identity preference optimization\" OR \"KTO\" OR \"Kahneman-Tversky optimization\" OR \"ORPO\" OR \"odds ratio preference optimization\" OR \"SimPO\" OR \"GRPO\" OR \"group relative policy optimization\" OR \"rejection sampling\" OR \"best-of-n sampling\" OR \"iterative DPO\")" },
+              { "label": "Specific", "terms": "(\"GAE\" OR \"generalized advantage estimation\" OR \"TRPO\" OR \"trust region policy optimization\" OR \"entropy regularization\" OR \"entropy bonus\" OR \"clipped objective\" OR \"importance sampling ratio\" OR \"experience replay\" OR \"replay buffer\")" }
+            ]
+          },
+          {
+            "type": "Tools",
+            "clusters": [
+              { "label": "Broad", "terms": "(\"Hugging Face\" OR \"HuggingFace\" OR \"transformers library\" OR \"PEFT\" OR \"parameter efficient fine-tuning\" OR \"LoRA\" OR \"low-rank adaptation\" OR \"QLoRA\" OR \"DeepSpeed\" OR \"FSDP\" OR \"fully sharded data parallel\")" },
+              { "label": "Established", "terms": "(\"TRL\" OR \"transformer reinforcement learning\" OR \"trl library\" OR \"Axolotl\" OR \"LLaMA-Factory\" OR \"unsloth\" OR \"vLLM\" OR \"text-generation-inference\" OR \"TGI\" OR \"Megatron-LM\" OR \"NeMo framework\")" },
+              { "label": "Recent", "terms": "(\"OpenRLHF\" OR \"Open-RLHF\" OR \"veRL\" OR \"torchtune\" OR \"LLaMA 3 training\" OR \"Llama 3.1 fine-tuning\" OR \"Mistral fine-tuning\" OR \"Qwen training\" OR \"DeepSeek training\" OR \"Gemma fine-tuning\" OR \"SGLang\")" },
+              { "label": "Specific", "terms": "(\"Ray RLlib\" OR \"RLlib\" OR \"Stable Baselines\" OR \"Stable-Baselines3\" OR \"SB3\" OR \"CleanRL\" OR \"SpinningUp\" OR \"Tianshou\" OR \"RL4LMs\" OR \"TRLX\")" }
+            ]
+          }
+        ]
+      },
+      {
+        "number": 2,
+        "title": "Agent Systems",
+        "sub_blocks": [
+          {
+            "type": "Concepts",
+            "clusters": [
+              { "label": "Broad", "terms": "(\"AI agents\" OR \"AI agent\" OR \"autonomous agents\" OR \"intelligent agents\" OR \"agentic AI\" OR \"agentic systems\" OR \"agent systems\" OR \"multi-agent\" OR \"multi-agent systems\" OR \"agent-based systems\")" },
+              { "label": "Established", "terms": "(\"LLM agents\" OR \"LLM-based agents\" OR \"language model agents\" OR \"tool-using agents\" OR \"tool use\" OR \"function calling\" OR \"function-calling agents\" OR \"coding agents\" OR \"software engineering agents\" OR \"SWE agents\" OR \"reasoning agents\")" },
+              { "label": "Recent", "terms": "(\"computer use\" OR \"computer-use agents\" OR \"browser use\" OR \"browser-use agents\" OR \"GUI agents\" OR \"UI agents\" OR \"web agents\" OR \"desktop agents\" OR \"MCP\" OR \"model context protocol\" OR \"Claude computer use\")" },
+              { "label": "Specific", "terms": "(\"agent orchestration\" OR \"agent coordination\" OR \"task decomposition\" OR \"hierarchical agents\" OR \"planning agents\" OR \"ReAct agents\" OR \"chain-of-thought agents\" OR \"CoT agents\" OR \"self-reflection agents\" OR \"reflexion\" OR \"agent memory\")" }
+            ]
+          },
+          {
+            "type": "Methods",
+            "clusters": [
+              { "label": "Broad", "terms": "(\"prompt engineering\" OR \"prompt design\" OR \"prompt chaining\" OR \"few-shot prompting\" OR \"zero-shot prompting\" OR \"in-context learning\" OR \"ICL\" OR \"retrieval augmented\" OR \"RAG\" OR \"retrieval-augmented generation\")" },
+              { "label": "Established", "terms": "(\"ReAct\" OR \"reason and act\" OR \"chain of thought\" OR \"CoT\" OR \"tree of thoughts\" OR \"ToT\" OR \"self-consistency\" OR \"majority voting\" OR \"tool selection\" OR \"action parsing\" OR \"output parsing\" OR \"structured output\")" },
+              { "label": "Recent", "terms": "(\"agent trajectory\" OR \"trajectory collection\" OR \"trajectory optimization\" OR \"screen parsing\" OR \"UI understanding\" OR \"DOM extraction\" OR \"accessibility tree\" OR \"a11y tree\" OR \"set-of-marks\" OR \"SoM prompting\" OR \"visual grounding\")" },
+              { "label": "Specific", "terms": "(\"action space design\" OR \"action abstraction\" OR \"primitive actions\" OR \"compound actions\" OR \"macro actions\" OR \"skill learning\" OR \"skill discovery\" OR \"subgoal generation\" OR \"plan refinement\" OR \"error recovery\")" }
+            ]
+          },
+          {
+            "type": "Tools",
+            "clusters": [
+              { "label": "Broad", "terms": "(\"LangChain\" OR \"LangGraph\" OR \"LlamaIndex\" OR \"AutoGPT\" OR \"Auto-GPT\" OR \"BabyAGI\" OR \"AgentGPT\" OR \"CrewAI\" OR \"AutoGen\" OR \"autogen\" OR \"Semantic Kernel\")" },
+              { "label": "Established", "terms": "(\"OpenAI Assistants\" OR \"Assistants API\" OR \"OpenAI functions\" OR \"function calling API\" OR \"Claude tools\" OR \"Anthropic tools\" OR \"Playwright\" OR \"Puppeteer\" OR \"Selenium\" OR \"browser automation\")" },
+              { "label": "Recent", "terms": "(\"SWE-agent\" OR \"SWE agent\" OR \"OpenHands\" OR \"Devin\" OR \"Cognition Devin\" OR \"Aider\" OR \"aider-chat\" OR \"Cursor agent\" OR \"Windsurf\" OR \"Codeium\" OR \"Claude Code\" OR \"Claude MCP\")" },
+              { "label": "Specific", "terms": "(\"AgentBench\" OR \"ToolBench\" OR \"API-Bank\" OR \"ToolLLM\" OR \"Gorilla\" OR \"gorilla-llm\" OR \"TaskWeaver\" OR \"BOLAA\" OR \"AgentLite\" OR \"DSPy\")" }
+            ]
+          }
+        ]
+      },
+      {
+        "number": 3,
+        "title": "Environment Design",
+        "sub_blocks": [
+          {
+            "type": "Concepts",
+            "clusters": [
+              { "label": "Broad", "terms": "(\"simulation environment\" OR \"simulated environment\" OR \"training environment\" OR \"RL environment\" OR \"environment design\" OR \"synthetic environment\" OR \"sandbox environment\" OR \"sandboxed execution\" OR \"isolated execution\")" },
+              { "label": "Established", "terms": "(\"task environment\" OR \"task specification\" OR \"task curriculum\" OR \"curriculum design\" OR \"curriculum learning\" OR \"task distribution\" OR \"task diversity\" OR \"observation space\" OR \"action space\" OR \"state space\" OR \"environment dynamics\")" },
+              { "label": "Recent", "terms": "(\"agent sandbox\" OR \"agent harness\" OR \"execution harness\" OR \"code sandbox\" OR \"code execution environment\" OR \"browser sandbox\" OR \"web sandbox\" OR \"UI environment\" OR \"GUI environment\" OR \"computer environment\")" },
+              { "label": "Specific", "terms": "(\"episode boundary\" OR \"episode termination\" OR \"environment reset\" OR \"state initialization\" OR \"initial state distribution\" OR \"goal specification\" OR \"goal conditioning\" OR \"sparse reward\" OR \"dense reward\" OR \"reward shaping\")" }
+            ]
+          },
+          {
+            "type": "Methods",
+            "clusters": [
+              { "label": "Broad", "terms": "(\"task generation\" OR \"task synthesis\" OR \"procedural generation\" OR \"procedural task generation\" OR \"synthetic data generation\" OR \"data synthesis\" OR \"environment generation\" OR \"world generation\" OR \"scenario generation\")" },
+              { "label": "Established", "terms": "(\"domain randomization\" OR \"environment randomization\" OR \"task parameterization\" OR \"difficulty scaling\" OR \"adaptive curriculum\" OR \"automatic curriculum\" OR \"environment wrapper\" OR \"observation wrapper\" OR \"Gym wrapper\")" },
+              { "label": "Recent", "terms": "(\"task harness\" OR \"evaluation harness\" OR \"benchmark harness\" OR \"web task\" OR \"browser task\" OR \"UI task\" OR \"computer task\" OR \"code task\" OR \"repository-level task\" OR \"multi-step task\" OR \"long-horizon task\")" },
+              { "label": "Specific", "terms": "(\"API mocking\" OR \"mock API\" OR \"API simulation\" OR \"database seeding\" OR \"seed data\" OR \"fixture generation\" OR \"test fixture\" OR \"schema design\" OR \"data model design\" OR \"entity generation\")" }
+            ]
+          },
+          {
+            "type": "Tools",
+            "clusters": [
+              { "label": "Broad", "terms": "(\"OpenAI Gym\" OR \"Gymnasium\" OR \"Farama Gymnasium\" OR \"PettingZoo\" OR \"MuJoCo\" OR \"mujoco\" OR \"PyBullet\" OR \"Isaac Gym\" OR \"Isaac Sim\" OR \"Habitat\")" },
+              { "label": "Established", "terms": "(\"MiniWoB\" OR \"MiniWoB++\" OR \"WebShop\" OR \"InterCode\" OR \"CodeEnv\" OR \"SandboxedCodeExec\" OR \"E2B\" OR \"Modal sandbox\" OR \"Firecracker\")" },
+              { "label": "Recent", "terms": "(\"WebArena\" OR \"webarena\" OR \"VisualWebArena\" OR \"OSWorld\" OR \"WindowsAgentArena\" OR \"AndroidWorld\" OR \"WorkArena\" OR \"BrowserGym\" OR \"browser-gym\")" },
+              { "label": "Specific", "terms": "(\"GAIA benchmark\" OR \"AssistantBench\" OR \"AgentStudio\" OR \"Agent-E\" OR \"Magentic-One\" OR \"WebVoyager\" OR \"Mind2Web\" OR \"ScreenAgent\")" }
+            ]
+          }
+        ]
+      },
+      {
+        "number": 4,
+        "title": "Evaluation & Verification",
+        "sub_blocks": [
+          {
+            "type": "Concepts",
+            "clusters": [
+              { "label": "Broad", "terms": "(\"model evaluation\" OR \"LLM evaluation\" OR \"LLM eval\" OR \"model benchmarking\" OR \"AI evaluation\" OR \"evaluation framework\" OR \"eval framework\" OR \"benchmark suite\" OR \"test suite\")" },
+              { "label": "Established", "terms": "(\"accuracy metrics\" OR \"performance metrics\" OR \"evaluation metrics\" OR \"benchmark scores\" OR \"leaderboard\" OR \"model comparison\" OR \"baseline comparison\" OR \"ablation study\" OR \"A/B testing\")" },
+              { "label": "Recent", "terms": "(\"agentic evaluation\" OR \"agent evaluation\" OR \"task completion rate\" OR \"success rate\" OR \"trajectory evaluation\" OR \"multi-turn evaluation\" OR \"long-context evaluation\" OR \"tool-use evaluation\")" },
+              { "label": "Specific", "terms": "(\"reward function design\" OR \"verifier design\" OR \"outcome verification\" OR \"correctness checking\" OR \"functional correctness\" OR \"test-based evaluation\" OR \"execution-based evaluation\" OR \"judge model\" OR \"LLM-as-judge\")" }
+            ]
+          },
+          {
+            "type": "Methods",
+            "clusters": [
+              { "label": "Broad", "terms": "(\"evaluation pipeline\" OR \"eval pipeline\" OR \"test harness\" OR \"evaluation harness\" OR \"automated testing\" OR \"regression testing\" OR \"continuous evaluation\" OR \"evaluation infrastructure\")" },
+              { "label": "Established", "terms": "(\"pass@k\" OR \"pass at k\" OR \"code execution\" OR \"unit test evaluation\" OR \"functional testing\" OR \"integration testing\" OR \"end-to-end testing\" OR \"golden set evaluation\" OR \"held-out evaluation\")" },
+              { "label": "Recent", "terms": "(\"SWE-bench evaluation\" OR \"repository-level evaluation\" OR \"codebase-level evaluation\" OR \"real-world evaluation\" OR \"in-the-wild evaluation\" OR \"human evaluation\" OR \"expert evaluation\" OR \"red teaming\")" },
+              { "label": "Specific", "terms": "(\"reward modeling evaluation\" OR \"preference model evaluation\" OR \"verifier accuracy\" OR \"false positive rate\" OR \"false negative rate\" OR \"calibration\" OR \"uncertainty quantification\" OR \"confidence estimation\")" }
+            ]
+          },
+          {
+            "type": "Tools",
+            "clusters": [
+              { "label": "Broad", "terms": "(\"MMLU\" OR \"mmlu benchmark\" OR \"HellaSwag\" OR \"TruthfulQA\" OR \"ARC benchmark\" OR \"ARC-Challenge\" OR \"Winogrande\" OR \"GSM8K\" OR \"MATH benchmark\")" },
+              { "label": "Established", "terms": "(\"HumanEval\" OR \"human-eval\" OR \"MBPP\" OR \"lm-evaluation-harness\" OR \"EleutherAI eval\" OR \"OpenAI evals\" OR \"openai-evals\" OR \"Chatbot Arena\" OR \"LMSYS Arena\")" },
+              { "label": "Recent", "terms": "(\"SWE-bench\" OR \"SWE bench\" OR \"SWE-bench Verified\" OR \"Inspect AI\" OR \"inspect-ai\" OR \"UK AISI Inspect\" OR \"METR\" OR \"metr evals\" OR \"ARC-AGI\" OR \"Agentic evals\")" },
+              { "label": "Specific", "terms": "(\"BigCodeBench\" OR \"LiveCodeBench\" OR \"EvalPlus\" OR \"CodeContests\" OR \"APPS benchmark\" OR \"DS-1000\" OR \"RepoEval\" OR \"CrossCodeEval\")" }
+            ]
+          }
+        ]
+      },
+      {
+        "number": 5,
+        "title": "Data Operations",
+        "sub_blocks": [
+          {
+            "type": "Concepts",
+            "clusters": [
+              { "label": "Broad", "terms": "(\"data labeling\" OR \"data annotation\" OR \"annotation pipeline\" OR \"labeling pipeline\" OR \"training data\" OR \"ML data\" OR \"data quality\" OR \"data curation\" OR \"dataset creation\")" },
+              { "label": "Established", "terms": "(\"RLHF data\" OR \"preference data\" OR \"comparison data\" OR \"ranking data\" OR \"feedback data\" OR \"human feedback data\" OR \"instruction data\" OR \"SFT data\" OR \"conversation data\")" },
+              { "label": "Recent", "terms": "(\"trajectory data\" OR \"agent trajectory data\" OR \"rollout data\" OR \"episode data\" OR \"interaction data\" OR \"demonstration data\" OR \"expert demonstration\" OR \"synthetic data\" OR \"LLM-generated data\")" },
+              { "label": "Specific", "terms": "(\"inter-annotator agreement\" OR \"IAA\" OR \"annotation quality\" OR \"labeler agreement\" OR \"Cohen's kappa\" OR \"annotation guidelines\" OR \"labeling guidelines\" OR \"quality rubric\")" }
+            ]
+          },
+          {
+            "type": "Methods",
+            "clusters": [
+              { "label": "Broad", "terms": "(\"data collection\" OR \"data gathering\" OR \"data pipeline\" OR \"ETL pipeline\" OR \"data processing\" OR \"data cleaning\" OR \"data preprocessing\" OR \"data transformation\")" },
+              { "label": "Established", "terms": "(\"crowdsourcing\" OR \"crowd annotation\" OR \"annotation workflow\" OR \"labeling workflow\" OR \"quality control\" OR \"QC pipeline\" OR \"data review\" OR \"annotation review\" OR \"consensus labeling\")" },
+              { "label": "Recent", "terms": "(\"trajectory collection\" OR \"rollout collection\" OR \"online data collection\" OR \"on-policy data\" OR \"off-policy data\" OR \"data flywheel\" OR \"continuous data collection\" OR \"active learning\")" },
+              { "label": "Specific", "terms": "(\"annotation interface\" OR \"labeling interface\" OR \"annotation tool design\" OR \"task routing\" OR \"annotator assignment\" OR \"workload distribution\" OR \"quality sampling\" OR \"calibration tasks\")" }
+            ]
+          },
+          {
+            "type": "Tools",
+            "clusters": [
+              { "label": "Broad", "terms": "(\"Label Studio\" OR \"Labelbox\" OR \"Scale AI\" OR \"Appen\" OR \"Surge AI\" OR \"Prolific\" OR \"Amazon MTurk\" OR \"Mechanical Turk\")" },
+              { "label": "Established", "terms": "(\"Argilla\" OR \"Prodigy\" OR \"doccano\" OR \"CVAT\" OR \"Snorkel\" OR \"Cleanlab\" OR \"Great Expectations\")" },
+              { "label": "Recent", "terms": "(\"Lilac\" OR \"Nomic Atlas\" OR \"Datasette\" OR \"Humanloop\" OR \"Weights & Biases\" OR \"wandb\" OR \"Comet ML\" OR \"MLflow\")" },
+              { "label": "Specific", "terms": "(\"Hugging Face datasets\" OR \"datasets library\" OR \"Dolma\" OR \"RedPajama\" OR \"SlimPajama\" OR \"FineWeb\" OR \"OASST\" OR \"open-assistant\")" }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}
