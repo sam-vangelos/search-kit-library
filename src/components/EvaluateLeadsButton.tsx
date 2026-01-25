@@ -6,7 +6,7 @@ import { SearchKit } from '@/lib/types';
 interface EvaluateLeadsButtonProps {
   kit: {
     role_title: string;
-    company?: string;
+    company?: string | null;
     kit_data: SearchKit;
   };
 }
@@ -25,12 +25,12 @@ function generateScreeningPrompt(kit: EvaluateLeadsButtonProps['kit']): string {
 
   // Build archetype summaries
   const archetypeSummary = kit_data.archetypes
-    ?.map(a => `- ${a.name}: ${a.description}`)
+    ?.map(a => `- ${a.name}: ${a.summary}`)
     .join('\n') || '';
 
   // Extract key competencies from blocks
   const competencies = kit_data.blocks
-    ?.map(b => b.name)
+    ?.map(b => b.title)
     .join(', ') || '';
 
   return `You are a technical recruiter evaluating candidates for: ${role_title}${company ? ` at ${company}` : ''}.
