@@ -11,11 +11,12 @@ export function InfoModal({ onClose }: InfoModalProps) {
       onClick={onClose}
     >
       <div
-        className="bg-bg-secondary border border-border-primary rounded-lg p-6 w-full max-w-lg mx-4 shadow-xl max-h-[80vh] overflow-y-auto"
+        className="bg-bg-secondary border border-border-primary rounded-lg w-full max-w-2xl mx-4 shadow-xl max-h-[85vh] overflow-hidden flex flex-col"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-xl font-bold text-text-primary">About Search Kit Library</h2>
+        {/* Header */}
+        <div className="flex items-center justify-between px-6 py-4 border-b border-border-primary shrink-0">
+          <h2 className="text-xl font-bold text-text-primary">How to Use Search Kit Library</h2>
           <button
             onClick={onClose}
             className="text-text-muted hover:text-text-primary transition-colors"
@@ -26,55 +27,140 @@ export function InfoModal({ onClose }: InfoModalProps) {
           </button>
         </div>
 
-        <div className="space-y-4 text-sm">
-          <div>
-            <h3 className="font-semibold text-text-primary mb-1">What is this?</h3>
-            <p className="text-text-secondary">
-              Search Kit Library stores AI-generated boolean search strings for talent sourcing.
-              Paste a job description and get ready-to-use search queries for LinkedIn, GitHub, and other platforms.
+        {/* Scrollable Content */}
+        <div className="overflow-y-auto px-6 py-5 space-y-6">
+
+          {/* Quick Start */}
+          <section>
+            <h3 className="text-sm font-bold text-accent-blue uppercase tracking-wide mb-3">Quick Start</h3>
+            <p className="text-sm text-text-secondary leading-relaxed">
+              Search Kit Library transforms job descriptions into ready-to-use boolean search strings.
+              Generate a kit, copy the strings you need, paste into LinkedIn Recruiter or any sourcing platform.
             </p>
-          </div>
+          </section>
 
-          <div>
-            <h3 className="font-semibold text-text-primary mb-1">How to use</h3>
-            <ol className="text-text-secondary list-decimal list-inside space-y-1">
-              <li>Click "Generate New Kit" with a job description</li>
-              <li>Browse the generated blocks and archetypes</li>
-              <li>Copy search strings directly to your sourcing platform</li>
-              <li>Favorite kits to access them later</li>
-            </ol>
-          </div>
+          {/* The Workflow */}
+          <section>
+            <h3 className="text-sm font-bold text-accent-blue uppercase tracking-wide mb-3">The Workflow</h3>
+            <div className="space-y-3">
+              <div className="flex gap-3">
+                <span className="flex items-center justify-center w-6 h-6 bg-accent-blue/15 text-accent-blue text-xs font-bold rounded shrink-0">1</span>
+                <div>
+                  <p className="text-sm font-medium text-text-primary">Generate a Kit</p>
+                  <p className="text-xs text-text-muted">Paste your JD + any intake notes. The more detail, the better the output.</p>
+                </div>
+              </div>
+              <div className="flex gap-3">
+                <span className="flex items-center justify-center w-6 h-6 bg-accent-blue/15 text-accent-blue text-xs font-bold rounded shrink-0">2</span>
+                <div>
+                  <p className="text-sm font-medium text-text-primary">Browse & Copy</p>
+                  <p className="text-xs text-text-muted">Expand blocks to find relevant search strings. Click the copy icon on any string.</p>
+                </div>
+              </div>
+              <div className="flex gap-3">
+                <span className="flex items-center justify-center w-6 h-6 bg-accent-blue/15 text-accent-blue text-xs font-bold rounded shrink-0">3</span>
+                <div>
+                  <p className="text-sm font-medium text-text-primary">Combine with AND</p>
+                  <p className="text-xs text-text-muted">Copy strings from different blocks and AND them together for targeted searches.</p>
+                </div>
+              </div>
+              <div className="flex gap-3">
+                <span className="flex items-center justify-center w-6 h-6 bg-accent-blue/15 text-accent-blue text-xs font-bold rounded shrink-0">4</span>
+                <div>
+                  <p className="text-sm font-medium text-text-primary">Evaluate Candidates</p>
+                  <p className="text-xs text-text-muted">Click "Evaluate Leads" to copy a screening prompt. Paste into ChatGPT/Claude with candidate profiles.</p>
+                </div>
+              </div>
+            </div>
+          </section>
 
-          <div>
-            <h3 className="font-semibold text-text-primary mb-2">Glossary</h3>
-            <dl className="space-y-2 text-text-secondary">
-              <div>
-                <dt className="font-medium text-accent-blue">Blocks</dt>
-                <dd className="ml-3">Top-level search categories (e.g., "Job Titles", "Skills", "Companies")</dd>
+          {/* Understanding Your Kit */}
+          <section>
+            <h3 className="text-sm font-bold text-accent-blue uppercase tracking-wide mb-3">Understanding Your Kit</h3>
+
+            <div className="space-y-4">
+              {/* Archetypes */}
+              <div className="bg-bg-tertiary border border-border-primary rounded-md p-3">
+                <div className="flex items-center gap-2 mb-2">
+                  <span className="text-accent-green text-xs font-bold">ARCHETYPES</span>
+                </div>
+                <p className="text-xs text-text-secondary mb-2">
+                  Candidate personas that fit the role. Each archetype has a "recipe" showing which blocks to combine.
+                </p>
+                <p className="text-xs text-text-muted italic">
+                  Use when: You want a starting point for who to target, not just what terms to search.
+                </p>
               </div>
-              <div>
-                <dt className="font-medium text-accent-blue">SubBlocks</dt>
-                <dd className="ml-3">Subcategories within a block (e.g., "Programming Languages" under Skills)</dd>
+
+              {/* Blocks */}
+              <div className="bg-bg-tertiary border border-border-primary rounded-md p-3">
+                <div className="flex items-center gap-2 mb-2">
+                  <span className="text-accent-blue text-xs font-bold">BLOCKS</span>
+                  <span className="text-text-muted">→</span>
+                  <span className="text-accent-cyan text-xs font-bold">SUB-BLOCKS</span>
+                  <span className="text-text-muted">→</span>
+                  <span className="text-text-secondary text-xs font-bold">CLUSTERS</span>
+                </div>
+                <p className="text-xs text-text-secondary mb-2">
+                  <strong>Blocks</strong> are competency domains (e.g., "ML Infrastructure").
+                  <strong> Sub-blocks</strong> break these into Concepts, Methods, and Tools.
+                  <strong> Clusters</strong> are the actual boolean strings grouped by specificity.
+                </p>
+                <p className="text-xs text-text-muted italic">
+                  Use when: Building custom searches by combining terms across different competency areas.
+                </p>
               </div>
-              <div>
-                <dt className="font-medium text-accent-blue">Clusters</dt>
-                <dd className="ml-3">Groups of related search terms at different specificity levels</dd>
+
+              {/* Specificity Levels */}
+              <div className="bg-bg-tertiary border border-border-primary rounded-md p-3">
+                <div className="flex items-center gap-2 mb-2">
+                  <span className="text-text-primary text-xs font-bold">SPECIFICITY LEVELS</span>
+                </div>
+                <div className="grid grid-cols-2 gap-2 text-xs">
+                  <div>
+                    <span className="font-medium text-text-primary">Broad</span>
+                    <span className="text-text-muted"> — High volume, lower precision. Good for talent mapping.</span>
+                  </div>
+                  <div>
+                    <span className="font-medium text-text-primary">Established</span>
+                    <span className="text-text-muted"> — Industry-standard terms. Balanced reach and relevance.</span>
+                  </div>
+                  <div>
+                    <span className="font-medium text-accent-orange">Recent</span>
+                    <span className="text-text-muted"> — Cutting-edge terminology. Finds early adopters.</span>
+                  </div>
+                  <div>
+                    <span className="font-medium text-text-primary">Specific</span>
+                    <span className="text-text-muted"> — Exact-match terms. High precision, lower volume.</span>
+                  </div>
+                </div>
               </div>
-              <div>
-                <dt className="font-medium text-accent-blue">Specificity Levels</dt>
-                <dd className="ml-3">
-                  <span className="text-accent-orange">Recent</span> = cutting-edge terms,
-                  <span className="text-text-secondary"> High</span> = exact matches,
-                  <span className="text-text-secondary"> Medium</span> = related terms,
-                  <span className="text-text-secondary"> Low</span> = broad alternatives
-                </dd>
-              </div>
-              <div>
-                <dt className="font-medium text-accent-blue">Archetypes</dt>
-                <dd className="ml-3">Candidate personas with pre-built search recipes combining multiple blocks</dd>
-              </div>
-            </dl>
-          </div>
+            </div>
+          </section>
+
+          {/* Pro Tips */}
+          <section>
+            <h3 className="text-sm font-bold text-accent-blue uppercase tracking-wide mb-3">Pro Tips</h3>
+            <ul className="space-y-2 text-xs text-text-secondary">
+              <li className="flex gap-2">
+                <span className="text-accent-orange">•</span>
+                <span><strong>Include intake notes</strong> — They're weighted higher than the JD in evaluation prompts.</span>
+              </li>
+              <li className="flex gap-2">
+                <span className="text-accent-orange">•</span>
+                <span><strong>Start with Established</strong> — Then add Recent terms to find cutting-edge candidates.</span>
+              </li>
+              <li className="flex gap-2">
+                <span className="text-accent-orange">•</span>
+                <span><strong>Mix blocks with AND</strong> — e.g., (Skills block) AND (Company block) for targeted outreach.</span>
+              </li>
+              <li className="flex gap-2">
+                <span className="text-accent-orange">•</span>
+                <span><strong>Favorite frequently-used kits</strong> — They appear in your Favorites tab for quick access.</span>
+              </li>
+            </ul>
+          </section>
+
         </div>
       </div>
     </div>
