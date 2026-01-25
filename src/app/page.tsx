@@ -154,16 +154,47 @@ export default function LibraryPage() {
         <InfoModal onClose={() => setShowInfoModal(false)} />
       )}
 
-      {/* Header */}
+      {/* Header - Single Row Unified */}
       <header className="sticky top-0 z-50 bg-bg-primary border-b border-border-primary">
-        <div className="max-w-6xl mx-auto px-6 py-4">
-          {/* Top row: Title + Actions */}
-          <div className="flex items-center justify-between">
-            <h1 className="text-xl font-bold text-text-primary">Search Kit Library</h1>
-            <div className="flex items-center gap-2">
+        <div className="max-w-6xl mx-auto px-6 py-3">
+          <div className="flex items-center gap-6">
+            {/* Title */}
+            <h1 className="text-lg font-bold text-text-primary whitespace-nowrap">Search Kit Library</h1>
+
+            {/* Search + Tabs (center) */}
+            <div className="flex-1 flex items-center gap-3">
+              <div className="flex-1 max-w-md">
+                <SearchBar value={searchQuery} onChange={setSearchQuery} />
+              </div>
+              <div className="flex gap-1 shrink-0">
+                <button
+                  onClick={() => setActiveTab('all')}
+                  className={`px-3 py-1.5 text-sm font-medium rounded-md transition-colors ${
+                    activeTab === 'all'
+                      ? 'bg-bg-tertiary text-text-primary'
+                      : 'text-text-secondary hover:text-text-primary'
+                  }`}
+                >
+                  All ({kits.length})
+                </button>
+                <button
+                  onClick={() => setActiveTab('favorites')}
+                  className={`px-3 py-1.5 text-sm font-medium rounded-md transition-colors ${
+                    activeTab === 'favorites'
+                      ? 'bg-bg-tertiary text-text-primary'
+                      : 'text-text-secondary hover:text-text-primary'
+                  }`}
+                >
+                  Favorites ({favorites.length})
+                </button>
+              </div>
+            </div>
+
+            {/* Actions (right) */}
+            <div className="flex items-center gap-2 shrink-0">
               <button
                 onClick={() => setShowInfoModal(true)}
-                className="w-8 h-8 flex items-center justify-center text-text-muted hover:text-text-primary border border-border-primary rounded-md hover:border-text-muted transition-colors"
+                className="w-8 h-8 flex items-center justify-center text-text-muted hover:text-text-primary transition-colors"
                 title="About Search Kit Library"
               >
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -172,31 +203,13 @@ export default function LibraryPage() {
               </button>
               <Link
                 href="/generate"
-                className="px-4 py-2 bg-accent-blue text-bg-primary font-semibold text-sm rounded-md hover:opacity-90 transition-opacity"
+                className="flex items-center gap-1.5 px-3 py-1.5 bg-accent-blue text-bg-primary font-medium text-sm rounded-md hover:opacity-90 transition-opacity"
               >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                </svg>
                 Generate New Kit
               </Link>
-            </div>
-          </div>
-
-          {/* Middle row: Search + Tabs */}
-          <div className="mt-4 flex items-center gap-4">
-            <div className="flex-1">
-              <SearchBar value={searchQuery} onChange={setSearchQuery} />
-            </div>
-            <div className="flex gap-2 shrink-0">
-              <button
-                onClick={() => setActiveTab('all')}
-                className={`filter-tab ${activeTab === 'all' ? 'active' : ''}`}
-              >
-                All ({kits.length})
-              </button>
-              <button
-                onClick={() => setActiveTab('favorites')}
-                className={`filter-tab ${activeTab === 'favorites' ? 'active' : ''}`}
-              >
-                Favorites ({favorites.length})
-              </button>
             </div>
           </div>
         </div>
