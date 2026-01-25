@@ -177,12 +177,10 @@ body {
 }
 
 .ref-card-item-title {
-  font-size: 10px;
-  font-weight: 600;
-  color: var(--accent-blue);
-  margin-bottom: 6px;
-  font-family: 'JetBrains Mono', monospace;
-  text-transform: uppercase;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-muted);
+  margin-bottom: 4px;
 }
 
 /* Copy button animation */

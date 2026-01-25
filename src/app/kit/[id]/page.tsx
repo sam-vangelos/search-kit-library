@@ -150,7 +150,7 @@ export default function KitDetailPage() {
 
       {/* Sticky Header */}
       <header className="sticky top-0 z-50 bg-bg-primary border-b border-border-primary">
-        <div className="max-w-4xl mx-auto px-6 py-4">
+        <div className="max-w-5xl mx-auto px-6 py-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
               <Link
@@ -168,7 +168,7 @@ export default function KitDetailPage() {
                 </p>
               </div>
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-3">
               <EvaluateLeadsButton kit={kit} />
               <FavoriteButton isFavorited={isFavorited} onClick={toggleFavorite} />
             </div>
@@ -177,17 +177,11 @@ export default function KitDetailPage() {
       </header>
 
       {/* Main Content */}
-      <main className="max-w-4xl mx-auto px-6 py-8">
-        {/* Page Header */}
-        <div className="mb-8 pb-6 border-b border-border-primary">
-          <h1 className="text-3xl font-bold text-text-primary mb-3 bg-gradient-to-r from-text-primary to-text-secondary bg-clip-text">
-            {kit.role_title}
-          </h1>
-          <p className="text-[15px] text-text-secondary max-w-2xl">
+      <main className="max-w-5xl mx-auto px-6 py-6">
+        {/* Role Summary - no duplicate title */}
+        <div className="mb-6 pb-5 border-b border-border-primary">
+          <p className="text-[15px] text-text-secondary leading-relaxed">
             {kit_data.role_summary}
-          </p>
-          <p className="text-xs text-text-muted mt-3">
-            Generated {createdDate} · Template v{kit_data.version} · {kit.company}
           </p>
         </div>
 

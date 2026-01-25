@@ -81,7 +81,7 @@ export function EvaluateLeadsButton({ kit }: EvaluateLeadsButtonProps) {
     <div className="relative group">
       <button
         onClick={handleCopy}
-        className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-text-secondary hover:text-text-primary bg-bg-tertiary hover:bg-bg-secondary border border-border-primary rounded-md transition-colors"
+        className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-accent-blue hover:text-white bg-accent-blue/10 hover:bg-accent-blue border border-accent-blue/30 hover:border-accent-blue rounded-md transition-all"
       >
         {copied ? (
           <>

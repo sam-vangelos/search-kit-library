@@ -84,7 +84,7 @@ export default function GeneratePage() {
     <div className="min-h-screen bg-bg-primary">
       {/* Header */}
       <header className="border-b border-border-primary">
-        <div className="max-w-2xl mx-auto px-6 py-4">
+        <div className="max-w-3xl mx-auto px-6 py-4">
           <div className="flex items-center gap-4">
             <Link
               href="/"
@@ -100,7 +100,7 @@ export default function GeneratePage() {
       </header>
 
       {/* Main Content */}
-      <main className="max-w-2xl mx-auto px-6 py-8">
+      <main className="max-w-3xl mx-auto px-6 py-8">
         {status === 'generating' ? (
           <div className="text-center py-16">
             <div className="w-16 h-16 mx-auto mb-6 relative">
@@ -206,18 +206,23 @@ export default function GeneratePage() {
               <label htmlFor="organization" className="block text-sm font-semibold text-text-primary mb-2">
                 Organization
               </label>
-              <select
-                id="organization"
-                value={organization}
-                onChange={(e) => setOrganization(e.target.value)}
-                className="search-input w-full px-4 py-3 rounded-md text-sm focus:outline-none appearance-none bg-bg-secondary cursor-pointer"
-              >
-                {orgOptions.map((opt) => (
-                  <option key={opt.value} value={opt.value}>
-                    {opt.label}
-                  </option>
-                ))}
-              </select>
+              <div className="relative">
+                <select
+                  id="organization"
+                  value={organization}
+                  onChange={(e) => setOrganization(e.target.value)}
+                  className="search-input w-full px-4 py-3 pr-10 rounded-md text-sm focus:outline-none appearance-none bg-bg-secondary cursor-pointer"
+                >
+                  {orgOptions.map((opt) => (
+                    <option key={opt.value} value={opt.value}>
+                      {opt.label}
+                    </option>
+                  ))}
+                </select>
+                <svg className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </div>
             </div>
 
             {/* Job Description */}

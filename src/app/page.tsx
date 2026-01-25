@@ -191,15 +191,12 @@ export default function LibraryPage() {
             </div>
 
             {/* Actions (right) */}
-            <div className="flex items-center gap-2 shrink-0">
+            <div className="flex items-center gap-3 shrink-0">
               <button
                 onClick={() => setShowInfoModal(true)}
-                className="w-8 h-8 flex items-center justify-center text-text-muted hover:text-text-primary transition-colors"
-                title="About Search Kit Library"
+                className="text-sm text-text-muted hover:text-text-primary transition-colors"
               >
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
+                Guide
               </button>
               <Link
                 href="/generate"
