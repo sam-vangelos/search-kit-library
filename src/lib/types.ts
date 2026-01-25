@@ -58,6 +58,7 @@ export interface SearchKitRow {
   input_jd: string;
   input_intake: string | null;
   kit_data: SearchKit;
+  evaluation_prompt: string | null;
 }
 
 export interface UserFavoriteRow {

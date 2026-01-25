@@ -8,3 +8,4 @@ export { ClusterRow } from './ClusterRow';
 export { EmailPromptModal } from './EmailPromptModal';
 export { InfoModal } from './InfoModal';
 export { EvaluateLeadsButton } from './EvaluateLeadsButton';
+export { EvaluationPromptEditor } from './EvaluationPromptEditor';

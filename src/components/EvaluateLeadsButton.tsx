@@ -10,6 +10,7 @@ interface EvaluateLeadsButtonProps {
     input_jd: string;
     input_intake?: string | null;
     kit_data: SearchKit;
+    evaluation_prompt?: string | null;
   };
 }
 
@@ -115,7 +116,8 @@ export function EvaluateLeadsButton({ kit }: EvaluateLeadsButtonProps) {
 
   const handleCopy = async () => {
     try {
-      const prompt = generateScreeningPrompt(kit);
+      // Use custom evaluation prompt if present, otherwise generate one
+      const prompt = kit.evaluation_prompt || generateScreeningPrompt(kit);
       await navigator.clipboard.writeText(prompt);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
@@ -123,6 +125,8 @@ export function EvaluateLeadsButton({ kit }: EvaluateLeadsButtonProps) {
       console.error('Failed to copy:', err);
     }
   };
+
+  const hasCustomPrompt = Boolean(kit.evaluation_prompt);
 
   return (
     <div className="relative group">
@@ -150,7 +154,7 @@ export function EvaluateLeadsButton({ kit }: EvaluateLeadsButtonProps) {
       {/* Tooltip */}
       {!copied && (
         <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 text-xs text-text-primary bg-bg-secondary border border-border-primary rounded shadow-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap">
-          Copy & paste into ChatGPT
+          {hasCustomPrompt ? 'Copy custom prompt' : 'Copy & paste into ChatGPT'}
           <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-bg-secondary" />
         </div>
       )}

@@ -125,3 +125,19 @@ export function setUserEmail(email: string): void {
 export function hasUserEmail(): boolean {
   return !!getUserEmail();
 }
+
+// Update evaluation prompt for a kit
+export async function updateEvaluationPrompt(kitId: string, prompt: string | null): Promise<void> {
+  const supabase = getSupabase();
+  if (!supabase) return;
+
+  const { error } = await supabase
+    .from('search_kits')
+    .update({ evaluation_prompt: prompt })
+    .eq('id', kitId);
+
+  if (error) {
+    console.error('Error updating evaluation prompt:', error);
+    throw error;
+  }
+}
