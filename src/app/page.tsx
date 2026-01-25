@@ -157,11 +157,9 @@ export default function LibraryPage() {
       {/* Header */}
       <header className="sticky top-0 z-50 bg-bg-primary border-b border-border-primary">
         <div className="max-w-6xl mx-auto px-6 py-4">
-          <div className="flex items-center justify-between mb-4">
-            <div>
-              <h1 className="text-xl font-bold text-text-primary">Search Kit Library</h1>
-              <p className="text-sm text-text-secondary">Browse and favorite role-specific boolean sourcing kits</p>
-            </div>
+          {/* Top row: Title + Actions */}
+          <div className="flex items-center justify-between">
+            <h1 className="text-xl font-bold text-text-primary">Search Kit Library</h1>
             <div className="flex items-center gap-2">
               <button
                 onClick={() => setShowInfoModal(true)}
@@ -181,25 +179,26 @@ export default function LibraryPage() {
             </div>
           </div>
 
-          {/* Search Bar */}
-          <SearchBar value={searchQuery} onChange={setSearchQuery} />
-
-          {/* Filter Tabs */}
-          <div className="flex gap-2 mt-4">
-            <button
-              onClick={() => setActiveTab('all')}
-              className={`filter-tab ${activeTab === 'all' ? 'active' : ''}`}
-            >
-              All Kits ({kits.length})
-            </button>
-            <button
-              onClick={() => setActiveTab('favorites')}
-              className={`filter-tab ${activeTab === 'favorites' ? 'active' : ''}`}
-            >
-              My Favorites ({favorites.length})
-            </button>
+          {/* Middle row: Search + Tabs */}
+          <div className="mt-4 flex items-center gap-4">
+            <div className="flex-1">
+              <SearchBar value={searchQuery} onChange={setSearchQuery} />
+            </div>
+            <div className="flex gap-2 shrink-0">
+              <button
+                onClick={() => setActiveTab('all')}
+                className={`filter-tab ${activeTab === 'all' ? 'active' : ''}`}
+              >
+                All ({kits.length})
+              </button>
+              <button
+                onClick={() => setActiveTab('favorites')}
+                className={`filter-tab ${activeTab === 'favorites' ? 'active' : ''}`}
+              >
+                Favorites ({favorites.length})
+              </button>
+            </div>
           </div>
-
         </div>
       </header>
 

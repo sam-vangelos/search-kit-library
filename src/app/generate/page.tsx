@@ -14,10 +14,24 @@ export default function GeneratePage() {
 
   // Form fields
   const [roleTitle, setRoleTitle] = useState('');
-  const [company, setCompany] = useState('');
   const [createdBy, setCreatedBy] = useState('');
+  const [hiringManager, setHiringManager] = useState('');
+  const [organization, setOrganization] = useState('');
   const [inputJd, setInputJd] = useState('');
   const [inputIntake, setInputIntake] = useState('');
+
+  const orgOptions = [
+    { value: '', label: 'Select organization...' },
+    { value: 'TA2', label: 'TA2' },
+    { value: 'TI', label: 'TI' },
+    { value: 'Finance', label: 'Finance' },
+    { value: 'People', label: 'People' },
+    { value: 'Marketing', label: 'Marketing' },
+    { value: 'Delivery', label: 'Delivery' },
+    { value: 'Fulfillment', label: 'Fulfillment' },
+    { value: 'Legal', label: 'Legal' },
+    { value: 'R&D', label: 'R&D' },
+  ];
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -35,8 +49,9 @@ export default function GeneratePage() {
           },
           body: JSON.stringify({
             role_title: roleTitle,
-            company: company || undefined,
             created_by: createdBy,
+            hiring_manager: hiringManager || undefined,
+            organization: organization || undefined,
             input_jd: inputJd,
             input_intake: inputIntake || undefined,
           }),
@@ -155,22 +170,7 @@ export default function GeneratePage() {
               />
             </div>
 
-            {/* Company */}
-            <div>
-              <label htmlFor="company" className="block text-sm font-semibold text-text-primary mb-2">
-                Company
-              </label>
-              <input
-                type="text"
-                id="company"
-                value={company}
-                onChange={(e) => setCompany(e.target.value)}
-                placeholder="e.g., Turing"
-                className="search-input w-full px-4 py-3 rounded-md text-sm focus:outline-none"
-              />
-            </div>
-
-            {/* Created By */}
+            {/* Your Name */}
             <div>
               <label htmlFor="createdBy" className="block text-sm font-semibold text-text-primary mb-2">
                 Your Name <span className="text-accent-red">*</span>
@@ -184,6 +184,40 @@ export default function GeneratePage() {
                 className="search-input w-full px-4 py-3 rounded-md text-sm focus:outline-none"
                 required
               />
+            </div>
+
+            {/* Hiring Manager */}
+            <div>
+              <label htmlFor="hiringManager" className="block text-sm font-semibold text-text-primary mb-2">
+                Hiring Manager
+              </label>
+              <input
+                type="text"
+                id="hiringManager"
+                value={hiringManager}
+                onChange={(e) => setHiringManager(e.target.value)}
+                placeholder="e.g., John Smith"
+                className="search-input w-full px-4 py-3 rounded-md text-sm focus:outline-none"
+              />
+            </div>
+
+            {/* Organization */}
+            <div>
+              <label htmlFor="organization" className="block text-sm font-semibold text-text-primary mb-2">
+                Organization
+              </label>
+              <select
+                id="organization"
+                value={organization}
+                onChange={(e) => setOrganization(e.target.value)}
+                className="search-input w-full px-4 py-3 rounded-md text-sm focus:outline-none appearance-none bg-bg-secondary cursor-pointer"
+              >
+                {orgOptions.map((opt) => (
+                  <option key={opt.value} value={opt.value}>
+                    {opt.label}
+                  </option>
+                ))}
+              </select>
             </div>
 
             {/* Job Description */}

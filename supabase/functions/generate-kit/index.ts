@@ -9,8 +9,9 @@ const corsHeaders = {
 
 interface GenerateRequest {
   role_title: string;
-  company?: string;
   created_by: string;
+  hiring_manager?: string;
+  organization?: string;
   input_jd: string;
   input_intake?: string;
 }
@@ -23,7 +24,7 @@ serve(async (req) => {
 
   try {
     // Parse request body
-    const { role_title, company, created_by, input_jd, input_intake }: GenerateRequest = await req.json();
+    const { role_title, created_by, hiring_manager, organization, input_jd, input_intake }: GenerateRequest = await req.json();
 
     // Validate required fields
     if (!role_title || !input_jd || !created_by) {
@@ -172,7 +173,7 @@ serve(async (req) => {
       .from('search_kits')
       .insert({
         role_title,
-        company: company || null,
+        company: organization || null, // organization maps to company column
         created_by,
         input_jd,
         input_intake: input_intake || null,
