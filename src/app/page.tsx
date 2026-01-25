@@ -155,18 +155,26 @@ export default function LibraryPage() {
       )}
 
       {/* Header - Single Row Unified */}
-      <header className="sticky top-0 z-50 bg-bg-primary border-b border-border-primary">
-        <div className="max-w-6xl mx-auto px-6 py-3">
+      <header className="sticky top-0 z-50 bg-bg-primary border-b-2 border-border-primary">
+        <div className="max-w-6xl mx-auto px-6 py-4">
           <div className="flex items-center gap-6">
             {/* Title */}
-            <h1 className="text-lg font-bold text-text-primary whitespace-nowrap">Search Kit Library</h1>
+            <h1 className="text-xl font-bold text-text-primary whitespace-nowrap">Search Kit Library</h1>
 
-            {/* Search + Tabs (center) */}
-            <div className="flex-1 flex items-center gap-3">
-              <div className="flex-1 max-w-md">
-                <SearchBar value={searchQuery} onChange={setSearchQuery} />
-              </div>
-              <div className="flex gap-1 shrink-0">
+            {/* Search (center) */}
+            <div className="flex-1 max-w-lg">
+              <SearchBar value={searchQuery} onChange={setSearchQuery} />
+            </div>
+
+            {/* Guide + Tabs + Generate (right) */}
+            <div className="flex items-center gap-4 shrink-0">
+              <button
+                onClick={() => setShowInfoModal(true)}
+                className="px-3 py-1.5 text-sm font-medium bg-accent-orange/15 text-accent-orange border border-accent-orange/30 hover:bg-accent-orange/25 rounded-md transition-colors"
+              >
+                Guide
+              </button>
+              <div className="flex gap-1">
                 <button
                   onClick={() => setActiveTab('all')}
                   className={`px-3 py-1.5 text-sm font-medium rounded-md transition-colors ${
@@ -188,16 +196,6 @@ export default function LibraryPage() {
                   Favorites ({favorites.length})
                 </button>
               </div>
-            </div>
-
-            {/* Actions (right) */}
-            <div className="flex items-center gap-3 shrink-0">
-              <button
-                onClick={() => setShowInfoModal(true)}
-                className="text-sm text-text-muted hover:text-text-primary transition-colors"
-              >
-                Guide
-              </button>
               <Link
                 href="/generate"
                 className="flex items-center gap-1.5 px-3 py-1.5 bg-accent-blue text-bg-primary font-medium text-sm rounded-md hover:opacity-90 transition-opacity"

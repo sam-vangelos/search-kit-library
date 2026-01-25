@@ -178,14 +178,13 @@ export default function KitDetailPage() {
 
       {/* Main Content */}
       <main className="max-w-5xl mx-auto px-6 py-6">
-        {/* Hero Section */}
+        {/* Role Summary Intro */}
         <div className="mb-8 pb-6 border-b border-border-primary">
-          <h2 className="text-3xl font-bold text-text-primary mb-4">{kit.role_title}</h2>
           <p className="text-[15px] text-text-secondary leading-relaxed mb-3">
             {kit_data.role_summary}
           </p>
           <p className="text-xs text-text-muted">
-            Generated {createdDate} · Template v{kit_data.version}
+            Template v{kit_data.version}
           </p>
         </div>
 
