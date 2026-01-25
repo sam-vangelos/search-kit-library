@@ -7,60 +7,107 @@ interface EvaluateLeadsButtonProps {
   kit: {
     role_title: string;
     company?: string | null;
+    input_jd: string;
+    input_intake?: string | null;
     kit_data: SearchKit;
   };
 }
 
 function generateScreeningPrompt(kit: EvaluateLeadsButtonProps['kit']): string {
-  const { role_title, company, kit_data } = kit;
+  const { role_title, company, input_jd, input_intake, kit_data } = kit;
 
-  // Build context from role details
+  // Build role context from kit_data
   const roleContext = kit_data.role_details
     ? [
-        kit_data.role_details.core_function && `Core Function: ${kit_data.role_details.core_function}`,
-        kit_data.role_details.technical_domain && `Technical Domain: ${kit_data.role_details.technical_domain}`,
-        kit_data.role_details.key_deliverables && `Key Deliverables: ${kit_data.role_details.key_deliverables}`,
+        kit_data.role_details.core_function && `- Core Function: ${kit_data.role_details.core_function}`,
+        kit_data.role_details.technical_domain && `- Technical Domain: ${kit_data.role_details.technical_domain}`,
+        kit_data.role_details.key_deliverables && `- Key Deliverables: ${kit_data.role_details.key_deliverables}`,
+        kit_data.role_details.stakeholders && `- Stakeholders: ${kit_data.role_details.stakeholders}`,
       ].filter(Boolean).join('\n')
     : '';
 
-  // Build archetype summaries
-  const archetypeSummary = kit_data.archetypes
-    ?.map(a => `- ${a.name}: ${a.summary}`)
+  // Extract competency domains from blocks
+  const competencyDomains = kit_data.blocks
+    ?.map(b => `- ${b.title}`)
     .join('\n') || '';
 
-  // Extract key competencies from blocks
-  const competencies = kit_data.blocks
-    ?.map(b => b.title)
-    .join(', ') || '';
+  // Build the requirements section - intake notes weighted heavier when present
+  const hasIntake = input_intake && input_intake.trim().length > 0;
 
-  return `You are a technical recruiter evaluating candidates for: ${role_title}${company ? ` at ${company}` : ''}.
+  const requirementsSection = hasIntake
+    ? `### Hiring Manager Requirements (PRIMARY - weight these heavily)
+${input_intake}
 
-## Role Context
+### Job Description (secondary context)
+${input_jd}`
+    : `### Job Description
+${input_jd}`;
+
+  return `You are evaluating candidates for: **${role_title}**${company ? ` at ${company}` : ''}
+
+## Role Overview
 ${kit_data.role_summary}
 
 ${roleContext ? `${roleContext}\n` : ''}
-## Ideal Candidate Profiles
-${archetypeSummary}
+## Requirements to Evaluate Against
 
-## Key Competencies to Evaluate
-${competencies}
+${requirementsSection}
 
-## Your Task
-I will paste LinkedIn profile(s) or resume(s) below. For each candidate:
-
-1. **Fit Score** (1-10): How well does this person match the role?
-2. **Strengths**: What makes them a good fit? (2-3 bullets)
-3. **Gaps**: What's missing or concerning? (2-3 bullets)
-4. **Archetype Match**: Which ideal profile do they most resemble?
-5. **Verdict**: STRONG FIT / WORTH SCREENING / PASS
-
-Be direct and specific. Reference actual details from their profile.
+### Core Competency Domains
+${competencyDomains}
 
 ---
 
-CANDIDATE PROFILE(S):
+## Evaluation Instructions
 
-[Paste resume or LinkedIn profile text here]`;
+**Your job:** Determine if this candidate should advance to recruiter screen.
+${hasIntake ? '\n**IMPORTANT:** The Hiring Manager Requirements above reflect what the HM actually wants. Weight these MORE heavily than the formal job description when there are differences.\n' : ''}
+### Scoring Rubric (be rigorous)
+| Score | Meaning |
+|-------|---------|
+| 9-10 | Exceptional. Hits all must-haves + multiple nice-to-haves. Fast-track. |
+| 7-8 | Strong. Hits most must-haves, minor gaps. Worth screening. |
+| 5-6 | Partial. Missing key requirements but has transferable experience. |
+| 3-4 | Weak. Significant gaps in core requirements. |
+| 1-2 | Poor. Wrong background entirely. |
+
+### For Each Candidate, Provide:
+
+**1. SCORE: [X/10]**
+
+**2. REQUIREMENTS CHECK**
+| Requirement | Status | Evidence |
+|-------------|--------|----------|
+| [requirement 1] | ✓ / ~ / ✗ | [specific evidence from profile] |
+| [requirement 2] | ✓ / ~ / ✗ | [specific evidence from profile] |
+(Cover the key requirements from ${hasIntake ? 'HM notes and ' : ''}JD)
+
+**3. STRENGTHS** (2-3 bullets)
+What specifically qualifies them? Cite their experience.
+
+**4. CONCERNS** (2-3 bullets)
+What's missing or raises flags? Be specific.
+
+**5. VERDICT: ADVANCE / MAYBE / PASS**
+
+**6. SUMMARY**
+One sentence: "[Name] is a [verdict] because [core reason]."
+
+---
+
+## Rules
+
+- Cite specific evidence. No vague assessments.
+- "Unable to assess" if profile doesn't mention a requirement.
+- Weight recent experience (last 3-5 years) over older roles.
+- Missing a critical must-have = PASS, regardless of score.
+${hasIntake ? '- When JD and HM notes conflict, defer to HM notes.' : ''}
+
+---
+
+PASTE CANDIDATE PROFILE(S) BELOW:
+
+`;
 }
 
 export function EvaluateLeadsButton({ kit }: EvaluateLeadsButtonProps) {
