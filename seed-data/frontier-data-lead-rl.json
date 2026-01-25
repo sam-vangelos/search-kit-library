@@ -95,7 +95,12 @@
             "clusters": [
               { "label": "Broad", "terms": "(\"AI agents\" OR \"AI agent\" OR \"autonomous agents\" OR \"intelligent agents\" OR \"agentic AI\" OR \"agentic systems\" OR \"agent systems\" OR \"multi-agent\" OR \"multi-agent systems\" OR \"agent-based systems\")" },
               { "label": "Established", "terms": "(\"LLM agents\" OR \"LLM-based agents\" OR \"language model agents\" OR \"tool-using agents\" OR \"tool use\" OR \"function calling\" OR \"function-calling agents\" OR \"coding agents\" OR \"software engineering agents\" OR \"SWE agents\" OR \"reasoning agents\")" },
-              { "label": "Recent", "terms": "(\"computer use\" OR \"computer-use agents\" OR \"browser use\" OR \"browser-use agents\" OR \"GUI agents\" OR \"UI agents\" OR \"web agents\" OR \"desktop agents\" OR \"MCP\" OR \"model context protocol\" OR \"Claude computer use\")" },
+              { "label": "Recent", "groups": [
+                { "label": "Computer Use", "terms": "(\"computer use\" OR \"computer-use agents\" OR \"desktop agents\" OR \"Claude computer use\" OR \"screen interaction\")" },
+                { "label": "Browser/Web", "terms": "(\"browser use\" OR \"browser-use agents\" OR \"web agents\" OR \"browser automation\" OR \"web scraping agents\")" },
+                { "label": "GUI/UI", "terms": "(\"GUI agents\" OR \"UI agents\" OR \"visual agents\" OR \"screenshot understanding\" OR \"UI automation\")" },
+                { "label": "MCP", "terms": "(\"MCP\" OR \"model context protocol\" OR \"MCP servers\" OR \"MCP tools\" OR \"function-calling protocol\")" }
+              ] },
               { "label": "Specific", "terms": "(\"agent orchestration\" OR \"agent coordination\" OR \"task decomposition\" OR \"hierarchical agents\" OR \"planning agents\" OR \"ReAct agents\" OR \"chain-of-thought agents\" OR \"CoT agents\" OR \"self-reflection agents\" OR \"reflexion\" OR \"agent memory\")" }
             ]
           },

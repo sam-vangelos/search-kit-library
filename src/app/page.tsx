@@ -1,27 +1,17 @@
 'use client';
 
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo, useEffect, useCallback } from 'react';
 import Link from 'next/link';
-import { SearchBar, KitCard } from '@/components';
-import { SearchKitRow, SearchKit } from '@/lib/types';
-import { getSearchKits } from '@/lib/supabase';
-
-// Import seed data as fallback
-import seedData from '../../seed-data/frontier-data-lead-rl.json';
-
-// Fallback mock data when Supabase isn't configured
-const MOCK_KITS: SearchKitRow[] = [
-  {
-    id: '550e8400-e29b-41d4-a716-446655440000',
-    role_title: seedData.role_title,
-    company: seedData.company,
-    created_at: new Date().toISOString(),
-    created_by: seedData.created_by,
-    input_jd: seedData.input_jd,
-    input_intake: seedData.input_intake,
-    kit_data: seedData.kit_data as unknown as SearchKit,
-  },
-];
+import { SearchBar, KitCard, EmailPromptModal, InfoModal } from '@/components';
+import { SearchKitRow } from '@/lib/types';
+import {
+  getSearchKits,
+  getUserFavorites,
+  addFavorite,
+  removeFavorite,
+  getUserEmail,
+  setUserEmail,
+} from '@/lib/supabase';
 
 type FilterTab = 'all' | 'favorites';
 
@@ -31,35 +21,28 @@ export default function LibraryPage() {
   const [favorites, setFavorites] = useState<string[]>([]);
   const [kits, setKits] = useState<SearchKitRow[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [usingMockData, setUsingMockData] = useState(false);
+  const [showEmailPrompt, setShowEmailPrompt] = useState(false);
+  const [userEmail, setUserEmailState] = useState<string | null>(null);
+  const [showInfoModal, setShowInfoModal] = useState(false);
 
-  // Load kits from Supabase or fallback to mock data
+  // Check for user email on mount
+  useEffect(() => {
+    const email = getUserEmail();
+    if (email) {
+      setUserEmailState(email);
+    } else {
+      setShowEmailPrompt(true);
+    }
+  }, []);
+
+  // Load kits from Supabase
   useEffect(() => {
     async function loadKits() {
       try {
-        // Check if Supabase is configured
-        if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
-          console.log('Supabase not configured, using mock data');
-          setKits(MOCK_KITS);
-          setUsingMockData(true);
-          setIsLoading(false);
-          return;
-        }
-
         const fetchedKits = await getSearchKits();
-        if (fetchedKits.length === 0) {
-          // No kits in database, use mock data
-          setKits(MOCK_KITS);
-          setUsingMockData(true);
-        } else {
-          setKits(fetchedKits);
-          setUsingMockData(false);
-        }
+        setKits(fetchedKits);
       } catch (error) {
         console.error('Error loading kits:', error);
-        // Fallback to mock data on error
-        setKits(MOCK_KITS);
-        setUsingMockData(true);
       } finally {
         setIsLoading(false);
       }
@@ -68,24 +51,57 @@ export default function LibraryPage() {
     loadKits();
   }, []);
 
-  // Load favorites from localStorage on mount
+  // Load favorites from Supabase when user email is set
   useEffect(() => {
-    const savedFavorites = localStorage.getItem('search_kit_favorites');
-    if (savedFavorites) {
-      setFavorites(JSON.parse(savedFavorites));
+    async function loadFavorites() {
+      if (!userEmail) return;
+
+      try {
+        const userFavorites = await getUserFavorites(userEmail);
+        setFavorites(userFavorites);
+      } catch (error) {
+        console.error('Error loading favorites:', error);
+      }
     }
+
+    loadFavorites();
+  }, [userEmail]);
+
+  // Handle email submission
+  const handleEmailSubmit = useCallback((email: string) => {
+    setUserEmail(email);
+    setUserEmailState(email);
+    setShowEmailPrompt(false);
   }, []);
 
-  // Save favorites to localStorage
-  const toggleFavorite = (kitId: string) => {
-    setFavorites((prev) => {
-      const newFavorites = prev.includes(kitId)
-        ? prev.filter((id) => id !== kitId)
-        : [...prev, kitId];
-      localStorage.setItem('search_kit_favorites', JSON.stringify(newFavorites));
-      return newFavorites;
-    });
-  };
+  // Toggle favorite using Supabase
+  const toggleFavorite = useCallback(async (kitId: string) => {
+    if (!userEmail) {
+      setShowEmailPrompt(true);
+      return;
+    }
+
+    const isFavorited = favorites.includes(kitId);
+
+    // Optimistic update
+    setFavorites((prev) =>
+      isFavorited ? prev.filter((id) => id !== kitId) : [...prev, kitId]
+    );
+
+    try {
+      if (isFavorited) {
+        await removeFavorite(userEmail, kitId);
+      } else {
+        await addFavorite(userEmail, kitId);
+      }
+    } catch (error) {
+      console.error('Error toggling favorite:', error);
+      // Revert on error
+      setFavorites((prev) =>
+        isFavorited ? [...prev, kitId] : prev.filter((id) => id !== kitId)
+      );
+    }
+  }, [userEmail, favorites]);
 
   // Filter kits based on search query and active tab
   const filteredKits = useMemo(() => {
@@ -128,6 +144,16 @@ export default function LibraryPage() {
 
   return (
     <div className="min-h-screen bg-bg-primary">
+      {/* Email Prompt Modal */}
+      {showEmailPrompt && (
+        <EmailPromptModal onSubmit={handleEmailSubmit} />
+      )}
+
+      {/* Info Modal */}
+      {showInfoModal && (
+        <InfoModal onClose={() => setShowInfoModal(false)} />
+      )}
+
       {/* Header */}
       <header className="sticky top-0 z-50 bg-bg-primary border-b border-border-primary">
         <div className="max-w-6xl mx-auto px-6 py-4">
@@ -136,12 +162,23 @@ export default function LibraryPage() {
               <h1 className="text-xl font-bold text-text-primary">Search Kit Library</h1>
               <p className="text-sm text-text-secondary">Browse and favorite role-specific boolean sourcing kits</p>
             </div>
-            <Link
-              href="/generate"
-              className="px-4 py-2 bg-accent-blue text-bg-primary font-semibold text-sm rounded-md hover:opacity-90 transition-opacity"
-            >
-              Generate New Kit
-            </Link>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => setShowInfoModal(true)}
+                className="w-8 h-8 flex items-center justify-center text-text-muted hover:text-text-primary border border-border-primary rounded-md hover:border-text-muted transition-colors"
+                title="About Search Kit Library"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </button>
+              <Link
+                href="/generate"
+                className="px-4 py-2 bg-accent-blue text-bg-primary font-semibold text-sm rounded-md hover:opacity-90 transition-opacity"
+              >
+                Generate New Kit
+              </Link>
+            </div>
           </div>
 
           {/* Search Bar */}
@@ -163,12 +200,6 @@ export default function LibraryPage() {
             </button>
           </div>
 
-          {/* Mock data notice */}
-          {usingMockData && (
-            <div className="mt-4 text-xs text-text-muted bg-bg-secondary border border-border-primary rounded px-3 py-2">
-              Using sample data. Configure Supabase to enable persistence and generation.
-            </div>
-          )}
         </div>
       </header>
 

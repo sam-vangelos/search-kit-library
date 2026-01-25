@@ -4,7 +4,7 @@ import { SearchBarProps } from '@/lib/types';
 
 export function SearchBar({ value, onChange, placeholder = 'Search by role, company, or terms...' }: SearchBarProps) {
   return (
-    <div className="relative w-full">
+    <div className="relative w-full max-w-[400px]">
       <svg
         className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-text-muted"
         fill="none"

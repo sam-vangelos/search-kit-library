@@ -1,6 +1,6 @@
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts';
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.39.0';
-import { buildPrompt } from './prompt.ts';
+import { SYSTEM_PROMPT, buildUserMessage } from './prompt.ts';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -52,25 +52,33 @@ serve(async (req) => {
       );
     }
 
-    // Build the prompt
-    const prompt = buildPrompt(input_jd, input_intake);
+    // Build the user message (JD + intake)
+    const userMessage = buildUserMessage(input_jd, input_intake);
 
-    // Call Claude API
-    console.log('Calling Claude API...');
+    // Call Claude API with prompt caching for the system prompt
+    console.log('Calling Claude API with prompt caching...');
     const claudeResponse = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'x-api-key': anthropicApiKey,
         'anthropic-version': '2023-06-01',
+        'anthropic-beta': 'prompt-caching-2024-07-31',
       },
       body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
+        model: 'claude-opus-4-5-20251101',
         max_tokens: 16000,
+        system: [
+          {
+            type: 'text',
+            text: SYSTEM_PROMPT,
+            cache_control: { type: 'ephemeral' },
+          },
+        ],
         messages: [
           {
             role: 'user',
-            content: prompt,
+            content: userMessage,
           },
         ],
       }),
@@ -98,19 +106,52 @@ serve(async (req) => {
     // Parse the JSON response
     let kitData;
     try {
-      // Try to extract JSON from the response (in case Claude added any surrounding text)
-      const jsonMatch = generatedText.match(/\{[\s\S]*\}/);
-      if (!jsonMatch) {
-        throw new Error('No JSON object found in response');
+      // Clean up the response - remove markdown code fences if present
+      let cleanedText = generatedText
+        .replace(/^```json\s*/i, '')
+        .replace(/^```\s*/i, '')
+        .replace(/\s*```$/i, '')
+        .trim();
+
+      // If it doesn't start with {, try to find the JSON object
+      if (!cleanedText.startsWith('{')) {
+        const startIndex = cleanedText.indexOf('{');
+        if (startIndex === -1) {
+          throw new Error('No JSON object found in response');
+        }
+        cleanedText = cleanedText.substring(startIndex);
       }
-      kitData = JSON.parse(jsonMatch[0]);
+
+      // Find the matching closing brace
+      let braceCount = 0;
+      let endIndex = -1;
+      for (let i = 0; i < cleanedText.length; i++) {
+        if (cleanedText[i] === '{') braceCount++;
+        if (cleanedText[i] === '}') braceCount--;
+        if (braceCount === 0) {
+          endIndex = i + 1;
+          break;
+        }
+      }
+
+      if (endIndex === -1) {
+        throw new Error('Unbalanced braces in JSON response');
+      }
+
+      const jsonString = cleanedText.substring(0, endIndex);
+      kitData = JSON.parse(jsonString);
     } catch (parseError) {
       console.error('JSON parse error:', parseError);
-      console.error('Raw response:', generatedText.substring(0, 500));
+      console.error('Raw response length:', generatedText.length);
+      console.error('Raw response start:', generatedText.substring(0, 500));
+      console.error('Raw response end:', generatedText.substring(generatedText.length - 500));
       return new Response(
         JSON.stringify({
           error: 'Failed to parse Claude response as JSON',
-          raw_response: generatedText.substring(0, 1000)
+          parse_error: parseError.message,
+          response_length: generatedText.length,
+          raw_start: generatedText.substring(0, 1000),
+          raw_end: generatedText.substring(generatedText.length - 1000)
         }),
         { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );

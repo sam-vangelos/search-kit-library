@@ -46,7 +46,7 @@ Every block has exactly 3 sub-blocks:
 
 ### A.2 Cluster Types (Precision Tiers)
 
-Every sub-block has exactly 4 clusters:
+Every sub-block has exactly 4 clusters. Each cluster contains 2-4 semantic **groups** of related terms:
 
 | Cluster | What belongs | Precision |
 |---------|--------------|-----------|
@@ -56,6 +56,24 @@ Every sub-block has exactly 4 clusters:
 | **Specific** | Implementation-level, niche | High precision, low recall |
 
 **Broad ≠ Generic.** Broad clusters catch people adjacent to THIS role's domain, not all of tech.
+
+### A.3 Term Groups Within Clusters
+
+Each cluster organizes its terms into **2-4 semantic groups**:
+
+| Aspect | Requirement |
+|--------|-------------|
+| **Group count** | 2-4 groups per cluster |
+| **Group label** | 1-4 words describing the concept (e.g., "Computer Use", "Browser Agents", "Protocol Standards") |
+| **Group content** | Tightly related synonyms/proxies for the SAME underlying concept |
+| **Mutual exclusivity** | No term appears in multiple groups within the same cluster |
+| **Total coverage** | All terms that would be in a flat cluster must appear across the groups — don't lose terms, organize them |
+
+**Example:** A "Recent" cluster in Agent Systems might group into:
+- "Computer Use" → terms about desktop/screen interaction
+- "Browser/Web" → terms about web automation agents
+- "GUI/UI" → terms about visual interface agents
+- "MCP" → terms about model context protocol
 
 ---
 
@@ -70,10 +88,10 @@ Every sub-block has exactly 4 clusters:
 ### B.2 Structure
 - Every block: exactly 3 sub-blocks (Concepts, Methods, Tools)
 - Every sub-block: exactly 4 clusters (Broad, Established, Recent, Specific)
-- Every cluster: 8-20 terms (non-negotiable)
+- Every cluster: 2-4 groups, total of 8-20 terms across all groups
 
 ### B.3 Cluster Expansion
-Apply ALL dimensions to each cluster:
+Apply ALL dimensions when generating terms for each group:
 1. Lexical variants (hyphenation, spacing, abbreviations)
 2. Synonyms
 3. Academic terminology
@@ -82,6 +100,8 @@ Apply ALL dimensions to each cluster:
 6. Emerging terms (for Recent)
 7. Domain-specific manifestations
 8. Compound terms
+
+**CRITICAL: Each group's terms field must be a complete Boolean parenthetical** with quoted phrases, OR operators, and proper handling of acronyms/abbreviations and hyphenation variants.
 
 ### B.4 Archetype Requirements
 - 3-4 archetypes
@@ -104,7 +124,7 @@ For each domain:
 1. Create Block with title
 2. Generate 3 Sub-blocks (Concepts, Methods, Tools)
 3. Each Sub-block gets 4 Clusters (Broad, Established, Recent, Specific)
-4. Each Cluster: 8-20 terms as a parenthetical Boolean string
+4. Each Cluster: 2-4 semantic groups, each group containing related terms as a Boolean parenthetical
 
 ### Step 3: Synthesize Archetypes (SECOND)
 After ALL blocks are complete:
@@ -152,29 +172,34 @@ Output a single JSON object matching this exact structure:
           "clusters": [
             {
               "label": "Broad",
-              "terms": "string — full Boolean parenthetical with ORs"
+              "groups": [
+                {
+                  "label": "string — 1-4 word group name",
+                  "terms": "string — Boolean parenthetical for this group"
+                }
+              ]
             },
             {
               "label": "Established",
-              "terms": "string"
+              "groups": [/* 2-4 groups */]
             },
             {
               "label": "Recent",
-              "terms": "string"
+              "groups": [/* 2-4 groups */]
             },
             {
               "label": "Specific",
-              "terms": "string"
+              "groups": [/* 2-4 groups */]
             }
           ]
         },
         {
           "type": "Methods",
-          "clusters": [/* same 4 clusters */]
+          "clusters": [/* same 4 clusters with groups */]
         },
         {
           "type": "Tools",
-          "clusters": [/* same 4 clusters */]
+          "clusters": [/* same 4 clusters with groups */]
         }
       ]
     }
@@ -185,27 +210,28 @@ Output a single JSON object matching this exact structure:
 **Output requirements:**
 - Output ONLY the JSON object, no markdown code fences
 - All strings must be properly escaped
+- Each cluster has a "groups" array with 2-4 group objects
+- Each group has a "label" (1-4 words) and "terms" (Boolean parenthetical)
 - Each "terms" field must be a complete Boolean parenthetical like: ("term1" OR "term2" OR "term3")
+- Groups within a cluster must be mutually exclusive (no overlapping terms)
+- Total terms across all groups in a cluster: 8-20
 - 4-6 blocks, each with exactly 3 sub-blocks, each with exactly 4 clusters
 - 3-4 archetypes with complete WHY explanations
 
----
-
-## Begin
-
-Generate the JSON for the following job description:
 `;
 
-export function buildPrompt(jd: string, intake?: string): string {
-  let prompt = BOOLEAN_IDE_PROMPT;
+// System prompt (static, cacheable)
+export const SYSTEM_PROMPT = BOOLEAN_IDE_PROMPT;
 
-  prompt += `\n\n---\n\n## Job Description\n\n${jd}`;
+// Build user message with JD (dynamic)
+export function buildUserMessage(jd: string, intake?: string): string {
+  let message = `## Job Description\n\n${jd}`;
 
   if (intake) {
-    prompt += `\n\n---\n\n## Intake Notes\n\n${intake}`;
+    message += `\n\n## Intake Notes\n\n${intake}`;
   }
 
-  prompt += `\n\n---\n\nGenerate the complete JSON output now. Output only valid JSON, no additional text or markdown.`;
+  message += `\n\n---\n\nGenerate the complete JSON output now. Output only valid JSON, no additional text or markdown.`;
 
-  return prompt;
+  return message;
 }

@@ -1,8 +1,14 @@
 // Search Kit Library Types
 
+export interface TermGroup {
+  label: string;
+  terms: string;
+}
+
 export interface Cluster {
   label: 'Broad' | 'Established' | 'Recent' | 'Specific';
-  terms: string;
+  terms?: string;
+  groups?: TermGroup[];
 }
 
 export interface SubBlock {

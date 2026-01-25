@@ -1,8 +1,41 @@
 'use client';
 
 import { useState } from 'react';
-import { BlockSectionProps, SubBlock } from '@/lib/types';
+import { BlockSectionProps, SubBlock, Cluster } from '@/lib/types';
 import { ClusterRow } from './ClusterRow';
+
+interface CollapsibleClusterProps {
+  cluster: Cluster;
+  defaultExpanded?: boolean;
+}
+
+function CollapsibleCluster({ cluster, defaultExpanded = false }: CollapsibleClusterProps) {
+  const [expanded, setExpanded] = useState(defaultExpanded);
+
+  return (
+    <div>
+      <div
+        onClick={() => setExpanded(!expanded)}
+        className="flex items-center gap-1.5 py-1 px-1 cursor-pointer hover:bg-bg-tertiary/50 rounded transition-colors"
+      >
+        <span className={`text-text-muted transition-transform ${expanded ? 'rotate-90' : ''}`}>
+          <svg className="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+          </svg>
+        </span>
+        <span className="text-xs font-medium text-text-secondary">
+          {cluster.label}
+        </span>
+      </div>
+
+      {expanded && (
+        <div className="pl-4 pr-1 pb-1 pt-1">
+          <ClusterRow cluster={cluster} />
+        </div>
+      )}
+    </div>
+  );
+}
 
 interface SubBlockSectionProps {
   subBlock: SubBlock;
@@ -13,10 +46,10 @@ function SubBlockSection({ subBlock, defaultExpanded = false }: SubBlockSectionP
   const [expanded, setExpanded] = useState(defaultExpanded);
 
   return (
-    <div className="border-l-2 border-border-primary ml-1">
+    <div>
       <div
         onClick={() => setExpanded(!expanded)}
-        className="flex items-center gap-2 py-2 px-3 cursor-pointer hover:bg-bg-tertiary/50 transition-colors"
+        className="flex items-center gap-2 py-1.5 px-2 cursor-pointer hover:bg-bg-tertiary/50 rounded transition-colors"
       >
         <span className={`text-text-muted transition-transform ${expanded ? 'rotate-90' : ''}`}>
           <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -32,9 +65,9 @@ function SubBlockSection({ subBlock, defaultExpanded = false }: SubBlockSectionP
       </div>
 
       {expanded && (
-        <div className="pl-6 pr-3 pb-3 space-y-1">
+        <div className="pl-5 pr-2 pb-1 space-y-0.5">
           {subBlock.clusters.map((cluster, idx) => (
-            <ClusterRow key={idx} cluster={cluster} />
+            <CollapsibleCluster key={idx} cluster={cluster} defaultExpanded={false} />
           ))}
         </div>
       )}

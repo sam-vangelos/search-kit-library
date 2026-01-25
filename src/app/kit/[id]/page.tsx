@@ -1,26 +1,18 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
-import { FavoriteButton, ArchetypeAccordion, BlockSection } from '@/components';
-import { SearchKitRow, SearchKit } from '@/lib/types';
-import { getSearchKit } from '@/lib/supabase';
-
-// Import seed data as fallback
-import seedData from '../../../../seed-data/frontier-data-lead-rl.json';
-
-// Fallback mock data
-const MOCK_KIT: SearchKitRow = {
-  id: '550e8400-e29b-41d4-a716-446655440000',
-  role_title: seedData.role_title,
-  company: seedData.company,
-  created_at: new Date().toISOString(),
-  created_by: seedData.created_by,
-  input_jd: seedData.input_jd,
-  input_intake: seedData.input_intake,
-  kit_data: seedData.kit_data as unknown as SearchKit,
-};
+import { FavoriteButton, ArchetypeAccordion, BlockSection, EmailPromptModal, EvaluateLeadsButton } from '@/components';
+import { SearchKitRow } from '@/lib/types';
+import {
+  getSearchKit,
+  getUserFavorites,
+  addFavorite,
+  removeFavorite,
+  getUserEmail,
+  setUserEmail,
+} from '@/lib/supabase';
 
 export default function KitDetailPage() {
   const params = useParams();
@@ -30,24 +22,20 @@ export default function KitDetailPage() {
   const [isFavorited, setIsFavorited] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [showEmailPrompt, setShowEmailPrompt] = useState(false);
+  const [userEmail, setUserEmailState] = useState<string | null>(null);
+
+  // Check for user email on mount
+  useEffect(() => {
+    const email = getUserEmail();
+    if (email) {
+      setUserEmailState(email);
+    }
+  }, []);
 
   useEffect(() => {
     async function loadKit() {
       try {
-        // Check if this is the mock kit ID
-        if (kitId === '550e8400-e29b-41d4-a716-446655440000') {
-          setKit(MOCK_KIT);
-          setIsLoading(false);
-          return;
-        }
-
-        // Check if Supabase is configured
-        if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
-          setError('Supabase not configured');
-          setIsLoading(false);
-          return;
-        }
-
         const fetchedKit = await getSearchKit(kitId);
         if (fetchedKit) {
           setKit(fetchedKit);
@@ -63,26 +51,53 @@ export default function KitDetailPage() {
     }
 
     loadKit();
-
-    // Load favorite status
-    const savedFavorites = localStorage.getItem('search_kit_favorites');
-    if (savedFavorites) {
-      const favorites = JSON.parse(savedFavorites);
-      setIsFavorited(favorites.includes(kitId));
-    }
   }, [kitId]);
 
-  const toggleFavorite = () => {
-    const savedFavorites = localStorage.getItem('search_kit_favorites');
-    const favorites: string[] = savedFavorites ? JSON.parse(savedFavorites) : [];
+  // Load favorite status from Supabase
+  useEffect(() => {
+    async function loadFavoriteStatus() {
+      if (!userEmail) return;
 
-    const newFavorites = isFavorited
-      ? favorites.filter((id) => id !== kitId)
-      : [...favorites, kitId];
+      try {
+        const favorites = await getUserFavorites(userEmail);
+        setIsFavorited(favorites.includes(kitId));
+      } catch (err) {
+        console.error('Error loading favorite status:', err);
+      }
+    }
 
-    localStorage.setItem('search_kit_favorites', JSON.stringify(newFavorites));
-    setIsFavorited(!isFavorited);
-  };
+    loadFavoriteStatus();
+  }, [userEmail, kitId]);
+
+  // Handle email submission
+  const handleEmailSubmit = useCallback((email: string) => {
+    setUserEmail(email);
+    setUserEmailState(email);
+    setShowEmailPrompt(false);
+  }, []);
+
+  const toggleFavorite = useCallback(async () => {
+    if (!userEmail) {
+      setShowEmailPrompt(true);
+      return;
+    }
+
+    // Optimistic update
+    const wasFavorited = isFavorited;
+    setIsFavorited(!wasFavorited);
+
+    try {
+      if (wasFavorited) {
+        await removeFavorite(userEmail, kitId);
+      } else {
+        await addFavorite(userEmail, kitId);
+      }
+    } catch (err) {
+      console.error('Error toggling favorite:', err);
+      // Revert on error
+      setIsFavorited(wasFavorited);
+    }
+  }, [userEmail, kitId, isFavorited]);
 
   if (isLoading) {
     return (
@@ -128,6 +143,11 @@ export default function KitDetailPage() {
 
   return (
     <div className="min-h-screen bg-bg-primary">
+      {/* Email Prompt Modal */}
+      {showEmailPrompt && (
+        <EmailPromptModal onSubmit={handleEmailSubmit} />
+      )}
+
       {/* Sticky Header */}
       <header className="sticky top-0 z-50 bg-bg-primary border-b border-border-primary">
         <div className="max-w-4xl mx-auto px-6 py-4">
@@ -148,7 +168,10 @@ export default function KitDetailPage() {
                 </p>
               </div>
             </div>
-            <FavoriteButton isFavorited={isFavorited} onClick={toggleFavorite} />
+            <div className="flex items-center gap-2">
+              <EvaluateLeadsButton kit={kit} />
+              <FavoriteButton isFavorited={isFavorited} onClick={toggleFavorite} />
+            </div>
           </div>
         </div>
       </header>

@@ -10,15 +10,17 @@ export function ArchetypeAccordion({ archetype, defaultOpen = false }: Archetype
     <div className="archetype-item mb-2">
       <div
         onClick={() => setExpanded(!expanded)}
-        className="flex items-center gap-2.5 p-3 cursor-pointer"
+        className="flex items-start gap-2.5 p-3 cursor-pointer"
       >
-        <span className={`flex items-center justify-center w-[18px] h-[18px] bg-bg-tertiary border border-border-primary rounded text-accent-blue chevron ${expanded ? 'rotated' : ''}`}>
+        <span className={`flex items-center justify-center w-[18px] h-[18px] mt-0.5 bg-bg-tertiary border border-border-primary rounded text-accent-blue chevron flex-shrink-0 ${expanded ? 'rotated' : ''}`}>
           <svg className="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
           </svg>
         </span>
-        <span className="text-[13px] font-semibold text-text-primary">{archetype.name}</span>
-        <span className="text-xs text-text-secondary ml-1">— {archetype.summary}</span>
+        <div className="flex-1 min-w-0">
+          <div className="text-[13px] font-semibold text-text-primary">{archetype.name}</div>
+          <div className="text-xs text-text-secondary mt-0.5">{archetype.summary}</div>
+        </div>
       </div>
 
       {expanded && (

@@ -109,14 +109,19 @@ export async function removeFavorite(userId: string, searchKitId: string): Promi
   }
 }
 
-// Get or create user ID from localStorage
-export function getUserId(): string {
-  if (typeof window === 'undefined') return '';
+// Get user email from localStorage
+export function getUserEmail(): string | null {
+  if (typeof window === 'undefined') return null;
+  return localStorage.getItem('search_kit_user_email');
+}
 
-  let userId = localStorage.getItem('search_kit_user_id');
-  if (!userId) {
-    userId = crypto.randomUUID();
-    localStorage.setItem('search_kit_user_id', userId);
-  }
-  return userId;
+// Set user email in localStorage
+export function setUserEmail(email: string): void {
+  if (typeof window === 'undefined') return;
+  localStorage.setItem('search_kit_user_email', email.toLowerCase().trim());
+}
+
+// Check if user has set their email
+export function hasUserEmail(): boolean {
+  return !!getUserEmail();
 }
