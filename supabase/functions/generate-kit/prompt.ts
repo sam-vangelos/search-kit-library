@@ -1,11 +1,11 @@
 // Boolean IDE Prompt - JSON Output Version
-// v6.0: Signal-based gating replaces volume requirements
+// v6.0: Signal-based gating with Recall/Precision clusters
 
 export const BOOLEAN_IDE_PROMPT = `# Boolean Construction Template v6.0 — JSON Output
 
 **Version:** 6.0 · January 2026 · Sam Vangelos
 
-**What changed in v6:** Signal-based gating replaces volume requirements. No minimums. Clusters are functional (Core/Narrow) not temporal (Broad/Established/Recent/Specific). Each group is a semantic neighborhood (one concept + its variants). LinkedIn search behavior informs variant construction.
+**What changed in v6:** Signal-based gating replaces volume requirements. No minimums. Clusters are precision-based (Recall/Precision) not temporal (Broad/Established/Recent/Specific). Each group is a semantic neighborhood (one concept + its variants). LinkedIn search behavior informs variant construction.
 
 ---
 
@@ -42,7 +42,7 @@ Generate a **complete JSON object** for Boolean sourcing from the job descriptio
 \`\`\`
 Block (domain/competency)
 └── Sub-block (Concepts / Methods / Tools)
-    └── Cluster (Core / Narrow)
+    └── Cluster (Recall / Precision)
         └── Group (semantic neighborhood — one concept + its variants)
 \`\`\`
 
@@ -75,16 +75,19 @@ No volume requirement. If a sub-block would only contain filler, omit it. A bloc
 
 ### A.4 Clusters
 
-Two cluster types based on function:
+Two cluster types based on search precision:
 
-| Cluster | Purpose |
-|---------|---------|
-| **Core** | Groups that find the right people when searched alone |
-| **Narrow** | Groups you AND with Core to tighten results |
+| Cluster | Purpose | What belongs |
+|---------|---------|--------------|
+| **Recall** | Broad anchors that get you to the right cohort | General terms that identify the population (e.g., "agent", "RLHF", "data annotation") |
+| **Precision** | Specific/jargony terms that filter to a subset | Niche tools, benchmarks, techniques that confirm deep expertise (e.g., "SWE-agent", "trajectory", "annotation rubric") |
 
-**Core is required** if the sub-block exists.
+**How recruiters use these:**
+- **Recall alone** = "Show me everyone in this space" (high volume, some noise)
+- **Precision alone** = "Show me only people with specific expertise" (low volume, high signal)
+- **Recall AND Precision** = "Show me people in this space who have this specific expertise" (power user move)
 
-**Narrow is optional.** Only include if there's a genuine use case for AND-tightening. Don't generate Narrow just to have it.
+**Both clusters are optional.** Generate whichever has signal-passing content. A sub-block might have only Recall (broad domain, no specific jargon exists yet), only Precision (niche field where broad terms don't exist), or both.
 
 ### A.5 Groups (Semantic Neighborhoods)
 
@@ -141,25 +144,41 @@ Do NOT include:
 
 ## Section B: Signal Test
 
-Every group must pass this test before inclusion:
+Every group must pass a signal test before inclusion. The test differs by cluster type:
 
-> **"If I search LinkedIn for ONLY this group's terms, do the results contain mostly plausible candidates for this specific role?"**
+### B.1 Recall Cluster Test
 
-### B.1 Applying the Test
+> **"Does this group anchor me to the right general population for this role?"**
 
-For each group you generate, mentally run the LinkedIn search.
+Recall groups are broad. They cast a net around the cohort. They should return people who are plausibly in the right space, even if not all are perfect fits.
 
 **Pass examples:**
-- \`("RLHF" OR "reinforcement learning from human feedback")\` → Results: ML researchers, post-training engineers ✅
-- \`("SWE-bench" OR "SWE bench")\` → Results: Coding eval researchers ✅
-- \`("Aider" OR "OpenHands" OR "SWE-agent")\` → Results: Coding agent builders ✅
+- \`("agent" OR "agentic" OR "AI agent")\` → Returns agent builders, researchers, engineers ✅
+- \`("RLHF" OR "reinforcement learning from human feedback")\` → Returns post-training practitioners ✅
+- \`("data annotation" OR "data labeling")\` → Returns annotation/labeling specialists ✅
 
 **Fail examples:**
-- \`("PyTorch" OR "TensorFlow")\` → Results: 500k+ ML practitioners, students ❌
-- \`("data pipeline" OR "ETL")\` → Results: Data engineers, analytics engineers ❌
-- \`("automation")\` → Results: RPA, DevOps, marketing ops ❌
+- \`("machine learning")\` → Too broad, returns everyone in ML ❌
+- \`("Python")\` → Returns all of software engineering ❌
+- \`("automation")\` → Returns RPA, DevOps, marketing ops ❌
 
-### B.2 Blacklist — Never Include
+### B.2 Precision Cluster Test
+
+> **"Does this group confirm specific expertise that distinguishes specialists from generalists?"**
+
+Precision groups are narrow. They filter to a subset. Someone with these terms has demonstrable depth in this specific area.
+
+**Pass examples:**
+- \`("SWE-agent" OR "SWE agent" OR "sweagent")\` → Specific tool, only builders know it ✅
+- \`("trajectory" OR "rollout" OR "episode")\` → RL jargon, confirms hands-on experience ✅
+- \`("annotation rubric" OR "quality rubric")\` → Specific practice, signals depth ✅
+
+**Fail examples:**
+- \`("agent")\` → Too broad for Precision, belongs in Recall ❌
+- \`("code" OR "coding")\` → Everyone codes, not a distinguishing signal ❌
+- \`("best practices")\` → Meaningless fluff ❌
+
+### B.3 Blacklist — Never Include
 
 **Universal infrastructure:**
 PyTorch, TensorFlow, JAX, Keras, Docker, Kubernetes, AWS, GCP, Azure, Spark, Airflow, Kafka, Redis, PostgreSQL, MongoDB, Git, GitHub, GitLab, VS Code, Jupyter, pandas, NumPy, SciPy, scikit-learn
@@ -175,29 +194,6 @@ GitHub Copilot, Cursor, Tabnine, CodeWhisperer, ChatGPT, Claude (product), Gemin
 
 **Buzzwords:**
 AI-powered, intelligent automation, cutting-edge, innovative, data-driven, next-generation, state-of-the-art, generative AI (alone), autonomous (alone), automation (alone)
-
-### B.3 Narrow Clusters
-
-Narrow groups tighten Core results via AND.
-
-**Include Narrow when:**
-- Core groups are slightly broader than ideal but still valuable
-- There's a natural domain qualifier that makes results more precise
-- Archetypes need a way to specify sub-populations
-
-**Example:**
-\`\`\`
-Core: ("reward model" OR "reward modeling")
-Narrow: ("code" OR "coding" OR "software")
-
-Usage: ("reward model") AND ("code" OR "coding")
-→ Finds reward modeling people who work on code specifically
-\`\`\`
-
-**Do NOT include Narrow if:**
-- Core is already specific enough
-- The narrowing would be so restrictive it returns no one
-- You're just generating it to fill space
 
 ---
 
@@ -216,8 +212,8 @@ For each domain:
 1. Create Block with title
 2. Generate Sub-blocks (Concepts, Methods, Tools) — only those with signal-passing content
 3. Each Sub-block gets clusters:
-   - Core (required if sub-block exists)
-   - Narrow (optional, only if useful for AND-tightening)
+   - Recall (optional, only if broad anchors have signal)
+   - Precision (optional, only if specific jargon exists)
 4. Each Cluster contains groups — as many as pass the signal test
 
 **Quality over quantity.** A sub-block with 2 high-signal groups is better than one with 10 groups padded with generic terms.
@@ -258,7 +254,7 @@ Output a single JSON object matching this exact structure:
       "recipe": [
         {
           "block": "string — block title",
-          "components": "string — e.g., 'Methods (Core) + Tools (Core)'"
+          "components": "string — e.g., 'Methods (Recall) + Tools (Precision)'"
         }
       ],
       "why": "string — explanation of combinatorial signal (2-4 sentences)"
@@ -273,7 +269,7 @@ Output a single JSON object matching this exact structure:
           "type": "Concepts",
           "clusters": [
             {
-              "label": "Core",
+              "label": "Recall",
               "groups": [
                 {
                   "label": "string — 1-4 word group name",
@@ -282,7 +278,7 @@ Output a single JSON object matching this exact structure:
               ]
             },
             {
-              "label": "Narrow",
+              "label": "Precision",
               "groups": [
                 {
                   "label": "string — 1-4 word group name",
@@ -296,20 +292,26 @@ Output a single JSON object matching this exact structure:
           "type": "Methods",
           "clusters": [
             {
-              "label": "Core",
+              "label": "Recall",
+              "groups": [/* groups */]
+            },
+            {
+              "label": "Precision",
               "groups": [/* groups */]
             }
-            // Narrow cluster is optional — omit if not needed
           ]
         },
         {
           "type": "Tools",
           "clusters": [
             {
-              "label": "Core",
+              "label": "Recall",
+              "groups": [/* groups */]
+            },
+            {
+              "label": "Precision",
               "groups": [/* groups */]
             }
-            // Narrow cluster is optional — omit if not needed
           ]
         }
       ]
@@ -325,7 +327,7 @@ Output a single JSON object matching this exact structure:
 - Each group has a "label" (1-4 words) and "terms" (Boolean parenthetical)
 - Each "terms" field must be a complete Boolean parenthetical like: ("term1" OR "term2" OR "term3")
 - Groups within a cluster must be mutually exclusive (no overlapping terms)
-- Core cluster is required for each sub-block; Narrow is optional
+- Both Recall and Precision clusters are optional — generate what has signal
 - Sub-blocks are optional — omit if no signal-passing content
 - 2-4 archetypes with complete WHY explanations
 - Every group must pass the signal test — no padding
@@ -339,25 +341,26 @@ Output a single JSON object matching this exact structure:
 **Block 1: Post-Training & RLHF**
 
 Sub-block: Methods
-- Cluster: Core
-  - Group: "RLHF Training" → ("RLHF" OR "reinforcement learning from human feedback")
+- Cluster: Recall (broad anchors)
+  - Group: "RLHF" → ("RLHF" OR "reinforcement learning from human feedback")
+  - Group: "Preference Training" → ("preference learning" OR "preference optimization")
+  - Group: "Fine-tuning" → ("instruction tuning" OR "SFT" OR "supervised fine-tuning")
+- Cluster: Precision (specific signals)
   - Group: "DPO" → ("DPO" OR "direct preference optimization")
-  - Group: "Reward Modeling" → ("reward model" OR "reward modeling")
-  - Group: "PPO" → ("PPO" OR "proximal policy optimization")
-  - Group: "Instruction Tuning" → ("instruction tuning" OR "instruction-tuned" OR "SFT" OR "supervised fine-tuning")
-- Cluster: Narrow
-  - Group: "Code Domain" → ("code" OR "coding" OR "software")
+  - Group: "Constitutional AI" → ("constitutional AI" OR "CAI" OR "RLAIF")
+  - Group: "Reward Modeling" → ("reward model" OR "reward modeling" OR "reward signal")
 
 Sub-block: Tools
-- Cluster: Core
+- Cluster: Recall
+  - Group: "Training Libraries" → ("training library" OR "fine-tuning framework")
+- Cluster: Precision
   - Group: "TRL" → ("TRL" OR "Transformer Reinforcement Learning")
   - Group: "Axolotl" → ("Axolotl" OR "axolotl-ai")
-  - Group: "LLaMA-Factory" → ("LLaMA-Factory" OR "LLaMA Factory" OR "llamafactory")
+  - Group: "OpenRLHF" → ("OpenRLHF" OR "Open RLHF")
 
-**What's NOT here:**
-- PyTorch, DeepSpeed (universal infrastructure)
-- gradient descent, Adam optimizer (universal ML)
-- "training pipeline" (too generic)
+**Why this split:**
+- Recall: "RLHF", "preference learning", "instruction tuning" are broad terms that anyone in post-training uses
+- Precision: "DPO", "constitutional AI", "TRL", "Axolotl" are specific enough that they confirm hands-on depth
 
 **Archetype Example:**
 
@@ -365,10 +368,10 @@ Name: The Lab Post-Training Engineer
 Summary: Built RLHF/post-training pipelines at a frontier lab
 
 Recipe:
-- Post-Training & RLHF → Methods (Core) + Tools (Core)
-- Code Evaluation → Tools (Core)
+- Post-Training & RLHF → Methods (Precision) + Tools (Precision)
+- Code Evaluation → Tools (Precision)
 
-WHY: RLHF + SWE-bench is a narrow intersection. Most RLHF work is chat/reasoning/safety — adding code benchmarks filters to the small population doing post-training specifically for coding capabilities. The tools (TRL, Axolotl) confirm hands-on implementation, not just research familiarity.
+WHY: Anyone can claim "RLHF experience." But mentions of DPO, constitutional AI, TRL, or Axolotl confirm they've actually implemented post-training pipelines, not just read about them. Adding code benchmarks (SWE-bench, HumanEval) filters specifically for people who've worked on coding capabilities, not chat or reasoning.
 
 ---
 
