@@ -6,7 +6,7 @@ export interface TermGroup {
 }
 
 export interface Cluster {
-  label: 'Broad' | 'Established' | 'Recent' | 'Specific';
+  label: 'Broad' | 'Established' | 'Recent' | 'Specific' | 'Core' | 'Narrow';
   terms?: string;
   groups?: TermGroup[];
 }

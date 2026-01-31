@@ -1,9 +1,11 @@
 // Boolean IDE Prompt - JSON Output Version
-// Modified from v5.1 to output structured JSON instead of HTML
+// v6.0: Signal-based gating replaces volume requirements
 
-export const BOOLEAN_IDE_PROMPT = `# Boolean Construction Template v5.1 — JSON Output
+export const BOOLEAN_IDE_PROMPT = `# Boolean Construction Template v6.0 — JSON Output
 
-**Version:** 5.1 · January 2026 · Sam Vangelos
+**Version:** 6.0 · January 2026 · Sam Vangelos
+
+**What changed in v6:** Signal-based gating replaces volume requirements. No minimums. Clusters are functional (Core/Narrow) not temporal (Broad/Established/Recent/Specific). Each group is a semantic neighborhood (one concept + its variants). LinkedIn search behavior informs variant construction.
 
 ---
 
@@ -13,100 +15,189 @@ Generate a **complete JSON object** for Boolean sourcing from the job descriptio
 
 **You must:**
 1. Follow the taxonomy in Section A
-2. Apply the gating rules in Section B
+2. Apply the signal test to every group (Section B)
 3. Follow the generation workflow in Section C (generate blocks BEFORE archetypes)
 4. Output valid JSON matching the schema in Section D
 
 **You must not:**
-- Create monolithic parentheticals (always cluster)
+- Include any group that fails the signal test
+- Pad clusters to hit volume targets — sparse is fine
+- Include universal infrastructure (PyTorch, TensorFlow, Docker, Kubernetes, AWS, GCP, Spark, Git, pandas, etc.)
+- Include universal ML (gradient descent, cross-validation, attention mechanisms, transformer, etc.)
+- Include user tools (GitHub Copilot, Cursor, ChatGPT, LangChain, LlamaIndex, etc.)
+- Include generic software practices (CI/CD, unit testing, code review, API integration, etc.)
+- Include diluted buzzwords (generative AI, AI-powered, autonomous agents, automation, etc.)
 - Generate archetypes before completing the Search Library
-- Include seniority terms in boolean clusters (use LinkedIn filters instead)
+- Include seniority terms in boolean (use LinkedIn filters instead)
 - Generate blocks for leadership/management (use LinkedIn seniority filters)
 - Generate blocks for client verticals mentioned in JD (these are context, not candidate skills)
-- Generate more than 6 blocks or more than 4 archetypes
 - Put benchmarks in Methods or Concepts (benchmarks are always Tools)
-- Put generic infrastructure terms in Broad clusters (PyTorch, Docker, Spark catch everyone)
-- Let expansion drift into generic terms (every term must be role-relevant)
 
 ---
 
 ## Section A: Taxonomy
 
-### A.1 Sub-block Types (Proxy Categories)
+### A.1 Hierarchy
 
-Every block has exactly 3 sub-blocks:
+\`\`\`
+Block (domain/competency)
+└── Sub-block (Concepts / Methods / Tools)
+    └── Cluster (Core / Narrow)
+        └── Group (semantic neighborhood — one concept + its variants)
+\`\`\`
 
-| Sub-block | What it captures | Example |
-|-----------|------------------|---------|
-| **Concepts** | Field vocabulary, domain descriptors | "reinforcement learning", "alignment" |
-| **Methods** | Techniques, algorithms, processes | "RLHF", "DPO", "PPO" |
-| **Tools** | Libraries, frameworks, platforms, benchmarks | "TRL", "SWE-bench", "HumanEval" |
+### A.2 Blocks
+
+Blocks are core competencies required for the role.
+
+**Test:** "Is this a distinct technical domain required for the role?"
+
+No volume requirement. Generate as many blocks as pass this test. A role might have 3 blocks or 6.
+
+**Do NOT generate blocks for:**
+- Leadership/management — use LinkedIn seniority filters
+- Client/customer verticals — these are context, not candidate skills
+- Generic soft skills — not searchable
+
+### A.3 Sub-blocks
+
+Three search angles per block:
+
+| Sub-block | What it captures | Test |
+|-----------|------------------|------|
+| **Concepts** | Field vocabulary, domain descriptors | "What field is this?" |
+| **Methods** | Techniques, algorithms, processes | "What do they do?" |
+| **Tools** | Libraries, frameworks, platforms, benchmarks | "What do they use?" (has repo/docs) |
+
+No volume requirement. If a sub-block would only contain filler, omit it. A block with only Methods and Tools (no Concepts) is valid if that's what has signal.
 
 **Critical: Benchmarks are ALWAYS Tools** (SWE-bench, HumanEval, WebArena, MMLU)
 
-### A.2 Cluster Types (Precision Tiers)
+### A.4 Clusters
 
-Every sub-block has exactly 4 clusters. Each cluster contains 2-4 semantic **groups** of related terms:
+Two cluster types based on function:
 
-| Cluster | What belongs | Precision |
-|---------|--------------|-----------|
-| **Broad** | High recall within the domain (not generic!) | High recall, low precision |
-| **Established** | Mainstream 2+ years | Balanced |
-| **Recent** | Last 12-18 months | Cutting-edge signal |
-| **Specific** | Implementation-level, niche | High precision, low recall |
+| Cluster | Purpose |
+|---------|---------|
+| **Core** | Groups that find the right people when searched alone |
+| **Narrow** | Groups you AND with Core to tighten results |
 
-**Broad ≠ Generic.** Broad clusters catch people adjacent to THIS role's domain, not all of tech.
+**Core is required** if the sub-block exists.
 
-### A.3 Term Groups Within Clusters
+**Narrow is optional.** Only include if there's a genuine use case for AND-tightening. Don't generate Narrow just to have it.
 
-Each cluster organizes its terms into **2-4 semantic groups**:
+### A.5 Groups (Semantic Neighborhoods)
 
-| Aspect | Requirement |
-|--------|-------------|
-| **Group count** | 2-4 groups per cluster |
-| **Group label** | 1-4 words describing the concept (e.g., "Computer Use", "Browser Agents", "Protocol Standards") |
-| **Group content** | Tightly related synonyms/proxies for the SAME underlying concept |
-| **Mutual exclusivity** | No term appears in multiple groups within the same cluster |
-| **Total coverage** | All terms that would be in a flat cluster must appear across the groups — don't lose terms, organize them |
+Each group is ONE concept plus its necessary variants. Groups are the atomic copyable unit.
 
-**Example:** A "Recent" cluster in Agent Systems might group into:
-- "Computer Use" → terms about desktop/screen interaction
-- "Browser/Web" → terms about web automation agents
-- "GUI/UI" → terms about visual interface agents
-- "MCP" → terms about model context protocol
+**What belongs in a single group:**
+
+✅ Right — one concept with variants:
+\`\`\`
+("RLHF" OR "reinforcement learning from human feedback")
+("SWE-bench" OR "SWE bench" OR "swebench" OR "SWE-Bench")
+("reward model" OR "reward modeling")
+\`\`\`
+
+❌ Wrong — multiple concepts jammed together:
+\`\`\`
+("RLHF" OR "DPO" OR "reward modeling")
+\`\`\`
+These are three different concepts. They should be three separate groups.
+
+**LinkedIn search behavior — what to include in a group:**
+
+LinkedIn automatically handles case insensitivity and basic stemming (plural/singular). Do NOT include redundant variants.
+
+DO include:
+
+1. **Acronym + expansion** — if people use both forms
+   - ("RLHF" OR "reinforcement learning from human feedback")
+   - ("DPO" OR "direct preference optimization")
+
+2. **Spacing/hyphenation variants** — LinkedIn treats these as different strings
+   - ("SWE-bench" OR "SWE bench" OR "swebench" OR "SWE-Bench")
+   - ("lm-eval-harness" OR "lm-eval" OR "lm_eval")
+
+3. **Fundamentally different phrasings** — noun vs verb, different word order
+   - ("reward model" OR "reward modeling")
+   - ("instruction tuning" OR "instruction-tuned")
+
+4. **Validated colloquial alternatives** — only terms practitioners actually use
+   - ("trajectory" OR "rollout" OR "episode")
+   - ("rater" OR "annotator" OR "labeler")
+
+Do NOT include:
+- Case variants (handled automatically by LinkedIn)
+- Plural/singular (handled automatically via stemming)
+- Speculative phrasings you haven't validated
+- Theoretical expansions no one actually writes
+
+**Group labels:** 1-4 words describing the concept (e.g., "RLHF Training", "Code Benchmarks", "Preference Methods")
+
+**No volume requirement.** A cluster might have 1 group or 8. Generate what passes the signal test.
 
 ---
 
-## Section B: Gating Rules
+## Section B: Signal Test
 
-### B.1 Block Selection
-- Floor: 4 blocks
-- Ceiling: 6 blocks
-- Each block is a core competency required to perform the role
-- NO blocks for: leadership/management, client verticals, soft skills
+Every group must pass this test before inclusion:
 
-### B.2 Structure
-- Every block: exactly 3 sub-blocks (Concepts, Methods, Tools)
-- Every sub-block: exactly 4 clusters (Broad, Established, Recent, Specific)
-- Every cluster: 2-4 groups, total of 8-20 terms across all groups
+> **"If I search LinkedIn for ONLY this group's terms, do the results contain mostly plausible candidates for this specific role?"**
 
-### B.3 Cluster Expansion
-Apply ALL dimensions when generating terms for each group:
-1. Lexical variants (hyphenation, spacing, abbreviations)
-2. Synonyms
-3. Academic terminology
-4. Industry terminology
-5. Older terms
-6. Emerging terms (for Recent)
-7. Domain-specific manifestations
-8. Compound terms
+### B.1 Applying the Test
 
-**CRITICAL: Each group's terms field must be a complete Boolean parenthetical** with quoted phrases, OR operators, and proper handling of acronyms/abbreviations and hyphenation variants.
+For each group you generate, mentally run the LinkedIn search.
 
-### B.4 Archetype Requirements
-- 3-4 archetypes
-- Each must have: name, summary, recipe (block+cluster combos), WHY explanation
-- WHY must explain combinatorial signal (what the combination means that individual clusters don't)
+**Pass examples:**
+- \`("RLHF" OR "reinforcement learning from human feedback")\` → Results: ML researchers, post-training engineers ✅
+- \`("SWE-bench" OR "SWE bench")\` → Results: Coding eval researchers ✅
+- \`("Aider" OR "OpenHands" OR "SWE-agent")\` → Results: Coding agent builders ✅
+
+**Fail examples:**
+- \`("PyTorch" OR "TensorFlow")\` → Results: 500k+ ML practitioners, students ❌
+- \`("data pipeline" OR "ETL")\` → Results: Data engineers, analytics engineers ❌
+- \`("automation")\` → Results: RPA, DevOps, marketing ops ❌
+
+### B.2 Blacklist — Never Include
+
+**Universal infrastructure:**
+PyTorch, TensorFlow, JAX, Keras, Docker, Kubernetes, AWS, GCP, Azure, Spark, Airflow, Kafka, Redis, PostgreSQL, MongoDB, Git, GitHub, GitLab, VS Code, Jupyter, pandas, NumPy, SciPy, scikit-learn
+
+**Universal ML:**
+machine learning, deep learning, neural network, gradient descent, backpropagation, cross-validation, hyperparameter, overfitting, training (alone), inference (alone), model (alone), accuracy, precision, recall, F1, attention mechanism, transformer (alone), encoder, decoder
+
+**Generic software:**
+CI/CD, GitHub Actions, Jenkins, unit testing, integration testing, TDD, code review, static analysis, linting, error handling, logging, API integration, microservices, REST, GraphQL
+
+**User tools (vs builder tools):**
+GitHub Copilot, Cursor, Tabnine, CodeWhisperer, ChatGPT, Claude (product), Gemini, Notion AI, LangChain, LlamaIndex, AutoGPT, BabyAGI
+
+**Buzzwords:**
+AI-powered, intelligent automation, cutting-edge, innovative, data-driven, next-generation, state-of-the-art, generative AI (alone), autonomous (alone), automation (alone)
+
+### B.3 Narrow Clusters
+
+Narrow groups tighten Core results via AND.
+
+**Include Narrow when:**
+- Core groups are slightly broader than ideal but still valuable
+- There's a natural domain qualifier that makes results more precise
+- Archetypes need a way to specify sub-populations
+
+**Example:**
+\`\`\`
+Core: ("reward model" OR "reward modeling")
+Narrow: ("code" OR "coding" OR "software")
+
+Usage: ("reward model") AND ("code" OR "coding")
+→ Finds reward modeling people who work on code specifically
+\`\`\`
+
+**Do NOT include Narrow if:**
+- Core is already specific enough
+- The narrowing would be so restrictive it returns no one
+- You're just generating it to fill space
 
 ---
 
@@ -120,17 +211,28 @@ Apply ALL dimensions when generating terms for each group:
 - Key tools/technologies
 
 ### Step 2: Generate Search Library (FIRST)
+
 For each domain:
 1. Create Block with title
-2. Generate 3 Sub-blocks (Concepts, Methods, Tools)
-3. Each Sub-block gets 4 Clusters (Broad, Established, Recent, Specific)
-4. Each Cluster: 2-4 semantic groups, each group containing related terms as a Boolean parenthetical
+2. Generate Sub-blocks (Concepts, Methods, Tools) — only those with signal-passing content
+3. Each Sub-block gets clusters:
+   - Core (required if sub-block exists)
+   - Narrow (optional, only if useful for AND-tightening)
+4. Each Cluster contains groups — as many as pass the signal test
+
+**Quality over quantity.** A sub-block with 2 high-signal groups is better than one with 10 groups padded with generic terms.
 
 ### Step 3: Synthesize Archetypes (SECOND)
+
 After ALL blocks are complete:
-1. Identify 3-4 distinct personas who could fill this role
+1. Identify 2-4 distinct personas who could fill this role
 2. Map each to specific Block → Sub-block (Cluster) combinations
 3. Write WHY explaining the combinatorial signal
+
+**WHY must explain:**
+- What does this *combination* signal that individual clusters don't?
+- What false positives does each added cluster filter out?
+- Why would this person (not someone from a related field) have these terms together?
 
 ---
 
@@ -140,7 +242,7 @@ Output a single JSON object matching this exact structure:
 
 \`\`\`json
 {
-  "version": "5.1",
+  "version": "6.0",
   "role_title": "string — the role title",
   "role_summary": "string — 2-3 sentence description of the role",
   "role_details": {
@@ -156,7 +258,7 @@ Output a single JSON object matching this exact structure:
       "recipe": [
         {
           "block": "string — block title",
-          "components": "string — e.g., 'Methods (Established) + Tools (Recent)'"
+          "components": "string — e.g., 'Methods (Core) + Tools (Core)'"
         }
       ],
       "why": "string — explanation of combinatorial signal (2-4 sentences)"
@@ -171,7 +273,7 @@ Output a single JSON object matching this exact structure:
           "type": "Concepts",
           "clusters": [
             {
-              "label": "Broad",
+              "label": "Core",
               "groups": [
                 {
                   "label": "string — 1-4 word group name",
@@ -180,26 +282,35 @@ Output a single JSON object matching this exact structure:
               ]
             },
             {
-              "label": "Established",
-              "groups": [/* 2-4 groups */]
-            },
-            {
-              "label": "Recent",
-              "groups": [/* 2-4 groups */]
-            },
-            {
-              "label": "Specific",
-              "groups": [/* 2-4 groups */]
+              "label": "Narrow",
+              "groups": [
+                {
+                  "label": "string — 1-4 word group name",
+                  "terms": "string — Boolean parenthetical for this group"
+                }
+              ]
             }
           ]
         },
         {
           "type": "Methods",
-          "clusters": [/* same 4 clusters with groups */]
+          "clusters": [
+            {
+              "label": "Core",
+              "groups": [/* groups */]
+            }
+            // Narrow cluster is optional — omit if not needed
+          ]
         },
         {
           "type": "Tools",
-          "clusters": [/* same 4 clusters with groups */]
+          "clusters": [
+            {
+              "label": "Core",
+              "groups": [/* groups */]
+            }
+            // Narrow cluster is optional — omit if not needed
+          ]
         }
       ]
     }
@@ -210,14 +321,58 @@ Output a single JSON object matching this exact structure:
 **Output requirements:**
 - Output ONLY the JSON object, no markdown code fences
 - All strings must be properly escaped
-- Each cluster has a "groups" array with 2-4 group objects
+- Each cluster has a "groups" array with 1+ group objects
 - Each group has a "label" (1-4 words) and "terms" (Boolean parenthetical)
 - Each "terms" field must be a complete Boolean parenthetical like: ("term1" OR "term2" OR "term3")
 - Groups within a cluster must be mutually exclusive (no overlapping terms)
-- Total terms across all groups in a cluster: 8-20
-- 4-6 blocks, each with exactly 3 sub-blocks, each with exactly 4 clusters
-- 3-4 archetypes with complete WHY explanations
+- Core cluster is required for each sub-block; Narrow is optional
+- Sub-blocks are optional — omit if no signal-passing content
+- 2-4 archetypes with complete WHY explanations
+- Every group must pass the signal test — no padding
 
+---
+
+## Section E: Worked Example
+
+**Role:** Frontier Data Lead, Code
+
+**Block 1: Post-Training & RLHF**
+
+Sub-block: Methods
+- Cluster: Core
+  - Group: "RLHF Training" → ("RLHF" OR "reinforcement learning from human feedback")
+  - Group: "DPO" → ("DPO" OR "direct preference optimization")
+  - Group: "Reward Modeling" → ("reward model" OR "reward modeling")
+  - Group: "PPO" → ("PPO" OR "proximal policy optimization")
+  - Group: "Instruction Tuning" → ("instruction tuning" OR "instruction-tuned" OR "SFT" OR "supervised fine-tuning")
+- Cluster: Narrow
+  - Group: "Code Domain" → ("code" OR "coding" OR "software")
+
+Sub-block: Tools
+- Cluster: Core
+  - Group: "TRL" → ("TRL" OR "Transformer Reinforcement Learning")
+  - Group: "Axolotl" → ("Axolotl" OR "axolotl-ai")
+  - Group: "LLaMA-Factory" → ("LLaMA-Factory" OR "LLaMA Factory" OR "llamafactory")
+
+**What's NOT here:**
+- PyTorch, DeepSpeed (universal infrastructure)
+- gradient descent, Adam optimizer (universal ML)
+- "training pipeline" (too generic)
+
+**Archetype Example:**
+
+Name: The Lab Post-Training Engineer
+Summary: Built RLHF/post-training pipelines at a frontier lab
+
+Recipe:
+- Post-Training & RLHF → Methods (Core) + Tools (Core)
+- Code Evaluation → Tools (Core)
+
+WHY: RLHF + SWE-bench is a narrow intersection. Most RLHF work is chat/reasoning/safety — adding code benchmarks filters to the small population doing post-training specifically for coding capabilities. The tools (TRL, Axolotl) confirm hands-on implementation, not just research familiarity.
+
+---
+
+*End of Boolean Construction Template v6.0*
 `;
 
 // System prompt (static, cacheable)
