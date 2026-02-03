@@ -10,6 +10,7 @@ export default function GeneratePage() {
   const router = useRouter();
   const [status, setStatus] = useState<GenerationStatus>('idle');
   const [error, setError] = useState<string | null>(null);
+  const [errorDetails, setErrorDetails] = useState<{parse_error?: string; raw_start?: string; raw_end?: string} | null>(null);
   const [generatedKitId, setGeneratedKitId] = useState<string | null>(null);
 
   // Form fields
@@ -37,6 +38,7 @@ export default function GeneratePage() {
     e.preventDefault();
     setStatus('generating');
     setError(null);
+    setErrorDetails(null);
 
     try {
       const response = await fetch(
@@ -61,6 +63,14 @@ export default function GeneratePage() {
       const data = await response.json();
 
       if (!response.ok) {
+        // Capture detailed error info if available
+        if (data.parse_error || data.raw_start) {
+          setErrorDetails({
+            parse_error: data.parse_error,
+            raw_start: data.raw_start,
+            raw_end: data.raw_end,
+          });
+        }
         throw new Error(data.error || 'Failed to generate kit');
       }
 
@@ -143,12 +153,43 @@ export default function GeneratePage() {
             {status === 'error' && error && (
               <div className="bg-accent-red/10 border border-accent-red/30 rounded-md p-4">
                 <div className="flex items-start gap-3">
-                  <svg className="w-5 h-5 text-accent-red mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-5 h-5 text-accent-red mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
-                  <div>
+                  <div className="flex-1 min-w-0">
                     <h3 className="font-semibold text-accent-red">Generation Failed</h3>
                     <p className="text-sm text-text-secondary mt-1">{error}</p>
+                    {errorDetails?.parse_error && (
+                      <div className="mt-3">
+                        <p className="text-xs font-semibold text-text-muted mb-1">Parse Error:</p>
+                        <code className="text-xs text-text-secondary bg-bg-tertiary px-2 py-1 rounded block overflow-x-auto">
+                          {errorDetails.parse_error}
+                        </code>
+                      </div>
+                    )}
+                    {errorDetails?.raw_start && (
+                      <details className="mt-3">
+                        <summary className="text-xs font-semibold text-text-muted cursor-pointer">
+                          Show raw response (for debugging)
+                        </summary>
+                        <div className="mt-2 space-y-2">
+                          <div>
+                            <p className="text-xs text-text-muted mb-1">Start:</p>
+                            <pre className="text-xs text-text-secondary bg-bg-tertiary p-2 rounded overflow-x-auto max-h-32 overflow-y-auto">
+                              {errorDetails.raw_start}
+                            </pre>
+                          </div>
+                          {errorDetails.raw_end && (
+                            <div>
+                              <p className="text-xs text-text-muted mb-1">End:</p>
+                              <pre className="text-xs text-text-secondary bg-bg-tertiary p-2 rounded overflow-x-auto max-h-32 overflow-y-auto">
+                                {errorDetails.raw_end}
+                              </pre>
+                            </div>
+                          )}
+                        </div>
+                      </details>
+                    )}
                   </div>
                 </div>
               </div>

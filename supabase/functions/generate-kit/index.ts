@@ -109,9 +109,9 @@ serve(async (req) => {
     try {
       // Clean up the response - remove markdown code fences if present
       let cleanedText = generatedText
-        .replace(/^```json\s*/i, '')
-        .replace(/^```\s*/i, '')
-        .replace(/\s*```$/i, '')
+        .replace(/^```json\s*/gim, '')
+        .replace(/^```\s*/gim, '')
+        .replace(/\s*```\s*$/gim, '')
         .trim();
 
       // If it doesn't start with {, try to find the JSON object
@@ -123,15 +123,37 @@ serve(async (req) => {
         cleanedText = cleanedText.substring(startIndex);
       }
 
-      // Find the matching closing brace
+      // Find the matching closing brace (handles nested braces correctly)
       let braceCount = 0;
+      let inString = false;
+      let escape = false;
       let endIndex = -1;
+
       for (let i = 0; i < cleanedText.length; i++) {
-        if (cleanedText[i] === '{') braceCount++;
-        if (cleanedText[i] === '}') braceCount--;
-        if (braceCount === 0) {
-          endIndex = i + 1;
-          break;
+        const char = cleanedText[i];
+
+        if (escape) {
+          escape = false;
+          continue;
+        }
+
+        if (char === '\\' && inString) {
+          escape = true;
+          continue;
+        }
+
+        if (char === '"' && !escape) {
+          inString = !inString;
+          continue;
+        }
+
+        if (!inString) {
+          if (char === '{') braceCount++;
+          if (char === '}') braceCount--;
+          if (braceCount === 0) {
+            endIndex = i + 1;
+            break;
+          }
         }
       }
 
@@ -140,7 +162,20 @@ serve(async (req) => {
       }
 
       const jsonString = cleanedText.substring(0, endIndex);
-      kitData = JSON.parse(jsonString);
+
+      // Try to parse, with detailed error on failure
+      try {
+        kitData = JSON.parse(jsonString);
+      } catch (innerParseError) {
+        // Try to identify the exact position of the error
+        const errorMatch = innerParseError.message.match(/position (\d+)/);
+        if (errorMatch) {
+          const pos = parseInt(errorMatch[1]);
+          const context = jsonString.substring(Math.max(0, pos - 100), pos + 100);
+          throw new Error(`JSON syntax error near position ${pos}: ...${context}...`);
+        }
+        throw innerParseError;
+      }
     } catch (parseError) {
       console.error('JSON parse error:', parseError);
       console.error('Raw response length:', generatedText.length);
