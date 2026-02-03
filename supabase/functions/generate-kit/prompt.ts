@@ -135,7 +135,7 @@ Do NOT include:
 
 **Group labels:** 1-4 words describing the concept (e.g., "RLHF Training", "Code Benchmarks", "Preference Methods")
 
-**No volume requirement.** A cluster might have 1 group or 8. Generate what passes the signal test.
+**No minimum, but be exhaustive.** A cluster might have 3 groups or 15. Generate ALL groups that pass the signal test — especially in Precision clusters where the long tail surfaces exceptional talent.
 
 ---
 
@@ -175,7 +175,34 @@ Precision groups are narrow. They filter to a subset. Someone with these terms h
 - \`("code" OR "coding")\` → Everyone codes, not a distinguishing signal ❌
 - \`("best practices")\` → Meaningless fluff ❌
 
-### B.3 Blacklist — Never Include
+### B.3 Exhaustiveness — Capture the Long Tail
+
+The goal is to capture the **full landscape** of signal-passing terms, not just the obvious ones. Don't stop at 3-4 groups if 10-15 exist.
+
+**Why this matters for recruiting:**
+
+The best candidates often have niche, cutting-edge, or emerging terms on their profiles — not just the mainstream vocabulary. A senior RLHF engineer might mention "TRL" but a truly exceptional one might mention "OpenRLHF", "LLaMA-Factory", or "alignment-handbook". A coding agent builder might have "SWE-agent" but the person you really want might have "Moatless", "Agentless", or "AutoCodeRover".
+
+**For each cluster, ask yourself:**
+- What are the emerging tools/techniques that only cutting-edge practitioners would know?
+- What's the niche jargon that distinguishes true specialists?
+- What open-source projects, benchmarks, or frameworks exist beyond the top 3-4?
+- What would someone working at the frontier of this field have on their profile?
+
+**Precision clusters especially should be comprehensive.** This is where you find the long tail — the weird, specific, cutting-edge stuff that surfaces exceptional talent. A Precision cluster with 10-15 groups is normal if the space is rich with distinct tools and techniques.
+
+**Don't:**
+- Stop at the first few terms that come to mind
+- Assume "the big ones" are sufficient
+- Leave out tools just because they're newer or less popular
+
+**Do:**
+- Dig for emerging projects and recent releases
+- Include niche benchmarks and evaluation frameworks
+- Capture variant spellings and repo names
+- Think about what a practitioner from 6 months in the future would have on their profile
+
+### B.4 Blacklist — Never Include
 
 **Universal infrastructure:**
 PyTorch, TensorFlow, JAX, Keras, Docker, Kubernetes, AWS, GCP, Azure, Spark, Airflow, Kafka, Redis, PostgreSQL, MongoDB, Git, GitHub, GitLab, VS Code, Jupyter, pandas, NumPy, SciPy, scikit-learn
@@ -213,7 +240,7 @@ For each domain:
    - Narrow (optional, only if useful for AND-tightening)
 4. Each Cluster contains groups — as many as pass the signal test
 
-**Quality over quantity.** A sub-block with 2 high-signal groups is better than one with 10 groups padded with generic terms.
+**Comprehensive, not padded.** Include all signal-passing groups that exist — don't stop at 3-4 if 10+ exist. But never pad with generic terms just to increase volume.
 
 ### Step 3: Synthesize Archetypes (SECOND)
 
