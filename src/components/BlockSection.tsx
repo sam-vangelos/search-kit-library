@@ -23,7 +23,9 @@ function CollapsibleCluster({ cluster, defaultExpanded = false }: CollapsibleClu
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
           </svg>
         </span>
-        <span className="text-xs font-medium text-text-secondary">
+        <span className={`text-xs font-medium ${
+          cluster.label === 'Precision' ? 'text-accent-orange' : 'text-text-secondary'
+        }`}>
           {cluster.label}
         </span>
       </div>
@@ -60,7 +62,7 @@ function SubBlockSection({ subBlock, defaultExpanded = false }: SubBlockSectionP
           {subBlock.type}
         </span>
         <span className="text-[11px] text-text-muted font-mono ml-auto">
-          {subBlock.clusters.length} clusters
+          {subBlock.clusters.length} {subBlock.clusters.length === 1 ? 'cluster' : 'clusters'}
         </span>
       </div>
 

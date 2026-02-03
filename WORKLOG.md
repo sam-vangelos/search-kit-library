@@ -1,7 +1,7 @@
 # Worklog
 
 ## Current Focus
-Deployed custom evaluation prompts feature. Each kit can now have a hand-crafted evaluation prompt.
+Deploying Boolean Construction Template v6.0 — signal-based generation with Recall/Precision clusters.
 
 ## Queue
 - [x] Push to GitHub ✓
@@ -22,6 +22,7 @@ Deployed custom evaluation prompts feature. Each kit can now have a hand-crafted
 | Email-based favorites (not localStorage UUID) | 2026-01-24 | Works across devices |
 | Specificity levels collapsed by default | 2026-01-24 | Reduce visual noise, expand on demand |
 | Custom evaluation prompts per kit | 2026-01-25 | Hand-crafted prompts for niche roles are more effective than auto-generated |
+| Boolean Template v6.0 with Recall/Precision | 2026-02-02 | Signal-based generation replaces volume requirements; clusters are Recall (broad) / Precision (specific) |
 
 ## Parked Ideas
 - **Sourcing Copilot** — Async HM collaboration + DSM learning from sourcing feedback. See `/docs/sourcing-copilot-spec.md`

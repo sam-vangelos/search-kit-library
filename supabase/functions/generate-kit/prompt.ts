@@ -1,6 +1,3 @@
-// Boolean IDE Prompt - JSON Output Version
-// v6.0: Signal-based gating with Recall/Precision clusters
-
 export const BOOLEAN_IDE_PROMPT = `# Boolean Construction Template v6.0 — JSON Output
 
 **Version:** 6.0 · January 2026 · Sam Vangelos
@@ -42,7 +39,7 @@ Generate a **complete JSON object** for Boolean sourcing from the job descriptio
 \`\`\`
 Block (domain/competency)
 └── Sub-block (Concepts / Methods / Tools)
-    └── Cluster (Recall / Precision)
+    └── Cluster (Core / Narrow)
         └── Group (semantic neighborhood — one concept + its variants)
 \`\`\`
 
@@ -212,8 +209,8 @@ For each domain:
 1. Create Block with title
 2. Generate Sub-blocks (Concepts, Methods, Tools) — only those with signal-passing content
 3. Each Sub-block gets clusters:
-   - Recall (optional, only if broad anchors have signal)
-   - Precision (optional, only if specific jargon exists)
+   - Core (required if sub-block exists)
+   - Narrow (optional, only if useful for AND-tightening)
 4. Each Cluster contains groups — as many as pass the signal test
 
 **Quality over quantity.** A sub-block with 2 high-signal groups is better than one with 10 groups padded with generic terms.
@@ -254,7 +251,7 @@ Output a single JSON object matching this exact structure:
       "recipe": [
         {
           "block": "string — block title",
-          "components": "string — e.g., 'Methods (Recall) + Tools (Precision)'"
+          "components": "string — e.g., 'Methods (Core) + Tools (Core)'"
         }
       ],
       "why": "string — explanation of combinatorial signal (2-4 sentences)"
@@ -327,7 +324,7 @@ Output a single JSON object matching this exact structure:
 - Each group has a "label" (1-4 words) and "terms" (Boolean parenthetical)
 - Each "terms" field must be a complete Boolean parenthetical like: ("term1" OR "term2" OR "term3")
 - Groups within a cluster must be mutually exclusive (no overlapping terms)
-- Both Recall and Precision clusters are optional — generate what has signal
+- Core cluster is required for each sub-block; Narrow is optional
 - Sub-blocks are optional — omit if no signal-passing content
 - 2-4 archetypes with complete WHY explanations
 - Every group must pass the signal test — no padding

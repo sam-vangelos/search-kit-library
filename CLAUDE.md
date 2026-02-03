@@ -60,7 +60,7 @@ You're driving. I'm reviewing:
 
 This is recruiting software. You know:
 - Sourcing workflows and boolean search
-- The taxonomy: Blocks → Sub-blocks (Concepts/Methods/Tools) → Clusters (Broad/Established/Recent/Specific) → Groups
+- The taxonomy: Blocks → Sub-blocks (Concepts/Methods/Tools) → Clusters (Recall/Precision) → Groups
 - Archetype-based organization for candidate personas
 
 Apply that knowledge. Don't give generic SaaS advice.
@@ -156,7 +156,7 @@ kit_data
 ├── archetypes[] (3-4 candidate personas with recipes)
 └── blocks[] (4-6 competency domains)
     └── sub_blocks[] (Concepts, Methods, Tools)
-        └── clusters[] (Broad, Established, Recent, Specific)
+        └── clusters[] (Recall, Precision — or legacy: Broad, Established, Recent, Specific)
             └── groups[] (2-4 semantic groupings, each with label + terms)
 ```
 

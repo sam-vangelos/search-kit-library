@@ -111,29 +111,24 @@ export function InfoModal({ onClose }: InfoModalProps) {
                 </p>
               </div>
 
-              {/* Specificity Levels */}
+              {/* Cluster Types */}
               <div className="bg-bg-tertiary border border-border-primary rounded-md p-3">
                 <div className="flex items-center gap-2 mb-2">
-                  <span className="text-text-primary text-xs font-bold">SPECIFICITY LEVELS</span>
+                  <span className="text-text-primary text-xs font-bold">CLUSTER TYPES</span>
                 </div>
-                <div className="grid grid-cols-2 gap-2 text-xs">
+                <div className="space-y-2 text-xs">
                   <div>
-                    <span className="font-medium text-text-primary">Broad</span>
-                    <span className="text-text-muted"> — High volume, lower precision. Good for talent mapping.</span>
+                    <span className="font-medium text-text-primary">Recall</span>
+                    <span className="text-text-muted"> — Broad anchors that get you to the right cohort. High volume, some noise.</span>
                   </div>
                   <div>
-                    <span className="font-medium text-text-primary">Established</span>
-                    <span className="text-text-muted"> — Industry-standard terms. Balanced reach and relevance.</span>
-                  </div>
-                  <div>
-                    <span className="font-medium text-accent-orange">Recent</span>
-                    <span className="text-text-muted"> — Cutting-edge terminology. Finds early adopters.</span>
-                  </div>
-                  <div>
-                    <span className="font-medium text-text-primary">Specific</span>
-                    <span className="text-text-muted"> — Exact-match terms. High precision, lower volume.</span>
+                    <span className="font-medium text-accent-orange">Precision</span>
+                    <span className="text-text-muted"> — Specific/jargony terms that confirm deep expertise. Low volume, high signal.</span>
                   </div>
                 </div>
+                <p className="text-xs text-text-muted mt-2 italic">
+                  Power move: AND a Recall cluster with a Precision cluster for filtered, targeted searches.
+                </p>
               </div>
             </div>
           </section>
@@ -148,11 +143,11 @@ export function InfoModal({ onClose }: InfoModalProps) {
               </li>
               <li className="flex gap-2">
                 <span className="text-accent-orange">•</span>
-                <span><strong>Start with Established</strong> — Then add Recent terms to find cutting-edge candidates.</span>
+                <span><strong>Start with Recall</strong> — Then AND with Precision clusters to filter to specialists.</span>
               </li>
               <li className="flex gap-2">
                 <span className="text-accent-orange">•</span>
-                <span><strong>Mix blocks with AND</strong> — e.g., (Skills block) AND (Company block) for targeted outreach.</span>
+                <span><strong>Mix blocks with AND</strong> — e.g., (Skills block) AND (Tools block) for targeted outreach.</span>
               </li>
               <li className="flex gap-2">
                 <span className="text-accent-orange">•</span>
