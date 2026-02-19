@@ -1,6 +1,6 @@
 # Search Kit Library
 
-A boolean sourcing kit generator and library for technical recruiters. Built with Next.js 14, Supabase, and Claude API.
+A team-wide boolean sourcing repository where recruiters can generate, browse, search, and favorite role-specific boolean sourcing kits. Transforms the Boolean IDE (a prompt-based generation tool) into a persistent, searchable team resource.
 
 **Live:** [search-kit-library.vercel.app](https://search-kit-library.vercel.app)
 
@@ -8,39 +8,15 @@ A boolean sourcing kit generator and library for technical recruiters. Built wit
 
 ## What It Does
 
-Search Kit Library generates role-specific boolean search strings for LinkedIn Recruiter. Paste a job description, and Claude produces a structured library of search terms organized by:
+1. **Generate** — Paste a job description + optional intake notes. Claude Opus 4.5 generates a structured boolean sourcing kit with candidate archetypes, competency blocks, and copy-ready boolean strings.
 
-- **Blocks** - Core competency domains (e.g., "Post-Training & RLHF", "Code Evaluation")
-- **Sub-blocks** - Search angles: Concepts, Methods, Tools
-- **Clusters** - Precision levels: Recall (broad) and Precision (specific)
-- **Groups** - Semantic neighborhoods: one concept + its variants as a copyable boolean
+2. **Browse** — All generated kits live in a searchable library. Search across role titles, companies, creators, block titles, and archetype names.
 
-Recruiters copy individual groups or combine them with AND operators to build targeted searches.
+3. **Favorite** — Email-based favorites persist across devices. No login required — enter your email once and your favorites follow you.
 
----
+4. **Source** — Expand any kit to see its full hierarchy: archetypes (candidate personas with recipes), blocks (competency domains), and boolean term groups organized by Recall/Precision signals. Copy any boolean string with one click.
 
-## Features
-
-### Kit Generation
-- Paste job description + optional intake notes
-- Claude (Opus 4.5) generates complete boolean library in 30-60 seconds
-- Powered by **Boolean Construction Template v6.0** - signal-based generation with Recall/Precision clusters
-
-### Kit Library
-- Browse all generated kits
-- Search by role title, company, creator, or keywords
-- Favorite kits (synced via email across devices)
-
-### Kit Detail View
-- Role summary with core function, technical domain, key deliverables, stakeholders
-- **Archetypes** - Candidate personas with recommended block combinations and rationale
-- **Search Library** - All blocks with collapsible Recall/Precision clusters
-- One-click copy for any group or cluster
-
-### Lead Evaluation
-- **Evaluate Leads** button generates a screening prompt
-- Copy into ChatGPT/Claude with candidate profiles for structured scoring
-- Custom evaluation prompts supported per kit
+5. **Evaluate** — "Evaluate Leads" generates a screening prompt from the kit + JD + intake notes, ready to paste into Claude or ChatGPT for batch candidate evaluation.
 
 ---
 
@@ -48,20 +24,25 @@ Recruiters copy individual groups or combine them with AND operators to build ta
 
 The generation engine uses a structured methodology:
 
-### Taxonomy
+### Kit Structure
+
 ```
-Block (domain/competency)
-└── Sub-block (Concepts / Methods / Tools)
-    └── Cluster (Recall / Precision)
-        └── Group (semantic neighborhood)
+Kit
+├── Role Summary (core function, technical domain, deliverables, stakeholders)
+├── Archetypes (2-4 candidate personas)
+│   └── Recipe (which blocks/clusters to combine) + Why
+└── Blocks (4-6 competency domains)
+    └── Sub-blocks (Concepts, Methods, Tools)
+        └── Clusters (Recall, Precision)
+            └── Groups (labeled boolean parentheticals)
 ```
 
 ### Recall vs Precision Clusters
 
 | Cluster | Purpose | Example |
 |---------|---------|---------|
-| **Recall** | Broad anchors - find the cohort | `("RLHF" OR "reinforcement learning from human feedback")` |
-| **Precision** | Specific signals - confirm expertise | `("DPO" OR "direct preference optimization")` |
+| **Recall** | Broad anchors — find the cohort | `("RLHF" OR "reinforcement learning from human feedback")` |
+| **Precision** | Specific signals — confirm expertise | `("DPO" OR "direct preference optimization")` |
 
 **Usage patterns:**
 - Recall alone = "Show me everyone in this space"
@@ -76,84 +57,96 @@ Every group must pass a signal test:
 
 ### Blacklist (Never Included)
 
-Universal infrastructure (PyTorch, Docker, AWS), generic ML terms (machine learning, transformer), user tools (GitHub Copilot, LangChain), and buzzwords (AI-powered, generative AI) are excluded - they dilute search results.
+Universal infrastructure (PyTorch, Docker, AWS), generic ML terms (machine learning, transformer), user tools (GitHub Copilot, LangChain), and buzzwords (AI-powered, generative AI) are excluded — they dilute search results.
+
+---
+
+## Architecture
+
+```
+search-kit-library/
+├── src/
+│   ├── app/
+│   │   ├── page.tsx                     # Library home — grid of kit cards
+│   │   ├── generate/page.tsx            # Generation form
+│   │   ├── kit/[id]/page.tsx            # Kit detail view
+│   │   └── layout.tsx                   # App layout
+│   ├── components/
+│   │   ├── KitCard.tsx                  # Kit preview card
+│   │   ├── ArchetypeAccordion.tsx       # Collapsible archetype display
+│   │   ├── BlockSection.tsx             # Block with nested sub-blocks/clusters
+│   │   ├── ClusterRow.tsx               # Term groups with copy buttons
+│   │   ├── SearchBar.tsx                # Search input
+│   │   ├── FavoriteButton.tsx           # Heart toggle
+│   │   ├── CopyButton.tsx              # Copy-to-clipboard with feedback
+│   │   ├── EmailPromptModal.tsx         # First-visit email capture
+│   │   ├── EvaluateLeadsButton.tsx      # Screening prompt generator
+│   │   └── InfoModal.tsx                # Help/guide modal
+│   └── lib/
+│       ├── supabase.ts                  # Supabase client + data fetchers
+│       └── types.ts                     # TypeScript interfaces
+├── supabase/
+│   └── functions/
+│       └── generate-kit/
+│           ├── index.ts                 # Edge Function handler
+│           └── prompt.ts                # Boolean Construction Template v6.0
+```
+
+### Generation Flow
+
+1. User submits JD on `/generate`
+2. POST to Supabase Edge Function
+3. Edge Function calls Claude Opus 4.5 with Boolean IDE v6.0 prompt (cached)
+4. Claude generates JSON matching kit schema (blocks first, then archetypes)
+5. Kit stored in Supabase `search_kits` table
+6. Redirect to `/kit/[id]`
+
+### Data Layer
+
+- **`search_kits`** — Kit metadata + `kit_data` JSONB column
+- **`user_favorites`** — Maps email to kit IDs
+- **Auth**: Email-based (localStorage), no OAuth
 
 ---
 
 ## Tech Stack
 
-- **Frontend:** Next.js 14 (App Router), React 18, TypeScript, Tailwind CSS
-- **Backend:** Supabase (PostgreSQL + Edge Functions)
-- **AI:** Claude API (Opus 4.5) with prompt caching
-- **Deployment:** Vercel (frontend), Supabase (backend)
+| Layer | Technology |
+|-------|-----------|
+| Framework | [Next.js 14](https://nextjs.org/) (App Router) |
+| Language | TypeScript |
+| AI | [Claude Opus 4.5](https://docs.anthropic.com/en/docs/about-claude/models) via Supabase Edge Function |
+| Backend | [Supabase](https://supabase.com/) (Postgres + Edge Functions) |
+| Hosting | [Vercel](https://vercel.com/) |
+| UI | [Tailwind CSS](https://tailwindcss.com/) |
 
----
-
-## Project Structure
-
-```
-src/
-├── app/
-│   ├── page.tsx              # Library home - browse/search kits
-│   ├── generate/page.tsx     # Generate new kit form
-│   ├── kit/[id]/page.tsx     # Kit detail view
-│   └── layout.tsx            # Root layout
-├── components/
-│   ├── ArchetypeAccordion.tsx
-│   ├── BlockSection.tsx
-│   ├── ClusterRow.tsx
-│   ├── CopyButton.tsx
-│   ├── EmailPromptModal.tsx
-│   ├── EvaluateLeadsButton.tsx
-│   ├── FavoriteButton.tsx
-│   ├── InfoModal.tsx
-│   ├── KitCard.tsx
-│   └── SearchBar.tsx
-└── lib/
-    ├── supabase.ts           # Supabase client + queries
-    └── types.ts              # TypeScript interfaces
-
-supabase/functions/
-└── generate-kit/
-    ├── index.ts              # Edge function handler
-    └── prompt.ts             # Boolean Template v6.0
-```
-
----
-
-## Local Development
+## Getting Started
 
 ### Prerequisites
 
 - Node.js 18+
-- Supabase CLI
-- Anthropic API key
+- A [Supabase](https://supabase.com/) project
+- An [Anthropic API key](https://console.anthropic.com/) (set in Supabase Edge Function secrets)
 
 ### Setup
 
-1. Clone and install:
 ```bash
-git clone <repo-url>
+git clone https://github.com/sam-vangelos/search-kit-library.git
 cd search-kit-library
 npm install
 ```
 
-2. Create `.env.local`:
+Create `.env.local`:
+
 ```env
 NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your_anon_key
-```
-
-3. Start development server:
-```bash
-npm run dev
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
 ```
 
 ### Supabase Setup
 
 1. Create tables:
 ```sql
--- Search kits
 CREATE TABLE search_kits (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   role_title TEXT NOT NULL,
@@ -166,10 +159,9 @@ CREATE TABLE search_kits (
   evaluation_prompt TEXT
 );
 
--- User favorites
 CREATE TABLE user_favorites (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  user_id TEXT NOT NULL,  -- email address
+  user_id TEXT NOT NULL,
   search_kit_id UUID REFERENCES search_kits(id) ON DELETE CASCADE,
   created_at TIMESTAMPTZ DEFAULT NOW(),
   UNIQUE(user_id, search_kit_id)
@@ -186,58 +178,39 @@ supabase secrets set ANTHROPIC_API_KEY=your_key
 supabase functions deploy generate-kit
 ```
 
----
-
-## Deployment
-
-### Vercel (Frontend)
-
-1. Connect repo to Vercel
-2. Set environment variables:
-   - `NEXT_PUBLIC_SUPABASE_URL`
-   - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
-3. Deploy
-
-### Supabase (Edge Function)
+### Run
 
 ```bash
-supabase functions deploy generate-kit
+npm run dev
 ```
+
+Open [http://localhost:3000](http://localhost:3000).
 
 ---
 
-## Usage Guide
+## Usage
 
 ### Generating a Kit
 
 1. Click **Generate New Kit**
-2. Fill in:
-   - **Role Title** (required) - e.g., "Frontier Data Lead - RL"
-   - **Your Name** (required)
-   - **Hiring Manager** (optional)
-   - **Organization** (optional) - TA2, TI, Finance, People, Marketing, Delivery, Fulfillment, Legal, R&D
-   - **Job Description** (required, 100+ characters)
-   - **Intake Notes** (optional) - HM must-haves, nice-to-haves
-3. Click **Generate Search Kit**
-4. Wait 30-60 seconds for Claude to generate
+2. Fill in role title, your name, job description (required), and optional intake notes / hiring manager / organization
+3. Click **Generate Search Kit** — wait 30-60 seconds
+4. Redirected to kit detail view
 
 ### Using a Kit
 
-1. Browse or search for a kit
-2. Open kit detail view
-3. Review **Archetypes** for recommended search strategies
-4. In **Search Library**, expand clusters to see groups
-5. Click any group to copy the boolean
-6. Paste into LinkedIn Recruiter
-7. Combine groups with AND for tighter searches
+1. Browse or search for a kit in the library
+2. Review **Archetypes** for recommended search strategies
+3. Expand **Search Library** clusters to see boolean groups
+4. Click any group to copy the boolean string
+5. Paste into LinkedIn Recruiter — combine groups with AND for tighter searches
 
 ### Evaluating Leads
 
-1. Open a kit
-2. Click **Evaluate Leads**
-3. Paste the prompt into ChatGPT or Claude
-4. Add candidate profiles below the prompt
-5. Get structured scoring: Score/10, Requirements Check, Strengths, Concerns, Verdict
+1. Open a kit and click **Evaluate Leads**
+2. Paste the prompt into ChatGPT or Claude
+3. Add candidate profiles below the prompt
+4. Get structured scoring: Score/10, Requirements Check, Strengths, Concerns, Verdict
 
 ---
 
@@ -250,12 +223,4 @@ supabase functions deploy generate-kit
 
 ---
 
-## Author
-
-Sam Vangelos
-
----
-
-## License
-
-Internal use - Turing
+Built by [Sam Vangelos](https://github.com/sam-vangelos)
