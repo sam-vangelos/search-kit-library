@@ -129,7 +129,6 @@ DO include:
 
 Do NOT include:
 - Case variants (handled automatically by LinkedIn)
-- Plural/singular (handled automatically via stemming)
 - Speculative phrasings you haven't validated
 - Theoretical expansions no one actually writes
 
