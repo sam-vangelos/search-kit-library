@@ -107,7 +107,7 @@ These are three different concepts. They should be three separate groups.
 
 **LinkedIn search behavior — what to include in a group:**
 
-LinkedIn automatically handles case insensitivity and basic stemming (plural/singular). Do NOT include redundant variants.
+LinkedIn Recruiter search is case-insensitive but does NOT stem. Every character difference is a different search token — plurals ("model" vs "models"), tenses ("fine-tuning" vs "fine-tuned"), and truncations ("evaluation" vs "evals") are all separate tokens that must be included as OR variants. Do NOT include case-only variants — those are truly redundant.
 
 DO include:
 
@@ -132,6 +132,8 @@ Do NOT include:
 - Plural/singular (handled automatically via stemming)
 - Speculative phrasings you haven't validated
 - Theoretical expansions no one actually writes
+
+**Case-insensitivity reminder:** LinkedIn Recruiter search is case-insensitive. Never include variants that differ only by capitalization. ("AgentBench" OR "agentbench") is redundant — they return identical results. Use OR slots exclusively for genuine lexical variants: alternate spellings, hyphenation differences, abbreviations, or different phrasings. Every OR slot is valuable real estate.
 
 **Group labels:** 1-4 words describing the concept (e.g., "RLHF Training", "Code Benchmarks", "Preference Methods")
 
@@ -218,6 +220,14 @@ GitHub Copilot, Cursor, Tabnine, CodeWhisperer, ChatGPT, Claude (product), Gemin
 
 **Buzzwords:**
 AI-powered, intelligent automation, cutting-edge, innovative, data-driven, next-generation, state-of-the-art, generative AI (alone), autonomous (alone), automation (alone)
+
+### B.5 Disambiguation — Generic Terms
+
+Do not include bare single-word terms that have a dominant non-technical meaning. If a term is commonly used outside ML/AI to describe everyday professional activities, company names, or general concepts, use only qualified compound phrases that anchor to the technical meaning. For example: ("AI alignment" OR "model alignment") not ("alignment" OR "AI alignment" OR "model alignment"). Before including any single-word term, consider whether a recruiter searching it on LinkedIn would primarily find professionals using it in a non-ML context. If yes, use only the compound form.
+
+### B.6 Abbreviation Collisions
+
+Do not include abbreviations or acronyms where the abbreviation has a more common meaning in general business, software engineering, or everyday language than it does in the specific ML/AI domain being targeted. Before including any abbreviation, consider whether a recruiter searching that abbreviation on LinkedIn would primarily find professionals using it in a non-ML context. If yes, include only the spelled-out form. If the abbreviation is paired with its full expansion in the same OR group, it is acceptable because the group as a whole disambiguates when combined with other blocks.
 
 ---
 
