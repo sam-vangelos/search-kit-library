@@ -95,6 +95,7 @@ serve(async (req) => {
     }
 
     const claudeData = await claudeResponse.json();
+    console.log('Token usage:', JSON.stringify(claudeData.usage));
     const generatedText = claudeData.content[0]?.text;
 
     if (!generatedText) {
