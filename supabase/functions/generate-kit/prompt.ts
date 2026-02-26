@@ -409,7 +409,29 @@ WHY: Anyone can claim "RLHF experience." But mentions of DPO, constitutional AI,
 
 ---
 
-*End of Boolean Construction Template v6.0*
+## Section F: Lexical Expansion Pass
+
+Before producing your final output, review every boolean group in the kit and expand it with additional lexical variants. For each group, consider:
+
+**1. MORPHOLOGICAL VARIANTS:** LinkedIn Recruiter treats every character difference as a different search token. "fine-tuning" does NOT match "fine-tuned." "environment" does NOT match "environments." "evaluation" does NOT match "evals." Include all relevant forms:
+- Plurals: "reward model" → also include "reward models"
+- Past tense: "fine-tuning" → also include "fine-tuned"
+- Present participle where the base form is a noun: "reward modeling" alongside "reward model"
+- Truncations practitioners actually use: "evals" for "evaluations," "env" for "environment," "infra" for "infrastructure"
+
+**2. PROFILE-VOICE PHRASINGS:** The kit should include terms as practitioners write them on LinkedIn profiles, not just how they appear in papers or job descriptions. Someone describes their work in past tense ("fine-tuned LLaMA," "built RLHF pipelines," "designed reward functions") or present participle ("building RL environments," "training reward models"). Include these verb-form variants.
+
+**3. ALTERNATE PHRASINGS:** Different word orderings and rephrasings that mean the same thing.
+- "human preference learning" vs "learning from human preferences"
+- "reinforcement learning from human feedback" vs "human feedback reinforcement learning"
+
+**4. EXACT-MATCH AWARENESS:** If your exact keyword appears character-for-character inside a longer phrase, LinkedIn already matches it — do not add the longer phrase. "reward model" already matches any profile containing "reward model development" or "reward model training" because the exact string is embedded. But if even one character differs — plurals, tenses, suffixes — LinkedIn treats it as a different search. Those must be added as separate OR terms.
+
+There is no penalty for long OR strings. A group with 8 well-chosen variants is better than one with 3. Every variant you miss is a candidate you miss.
+
+---
+
+*End of Boolean Construction Template v6.1*
 `;
 
 // System prompt (static, cacheable)
