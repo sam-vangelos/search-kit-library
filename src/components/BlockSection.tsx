@@ -4,6 +4,51 @@ import { useState } from 'react';
 import { BlockSectionProps, SubBlock, Cluster } from '@/lib/types';
 import { ClusterRow } from './ClusterRow';
 
+function stripOuterParens(terms: string): string {
+  const trimmed = terms.trim();
+  if (trimmed.startsWith('(') && trimmed.endsWith(')')) {
+    return trimmed.slice(1, -1);
+  }
+  return trimmed;
+}
+
+function buildCopyAllText(cluster: Cluster): string {
+  if (cluster.groups && cluster.groups.length > 0) {
+    const inner = cluster.groups.map(g => stripOuterParens(g.terms)).join(' OR ');
+    return `(${inner})`;
+  }
+  return cluster.terms ?? '';
+}
+
+function CopyAllButton({ cluster }: { cluster: Cluster }) {
+  const [copied, setCopied] = useState(false);
+
+  const handleCopy = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    try {
+      await navigator.clipboard.writeText(buildCopyAllText(cluster));
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1500);
+    } catch (err) {
+      console.error('Failed to copy:', err);
+    }
+  };
+
+  return (
+    <button
+      onClick={handleCopy}
+      className={`text-[10px] px-1.5 py-0.5 rounded transition-all ${
+        copied
+          ? 'text-accent-green'
+          : 'text-text-muted hover:text-text-secondary'
+      }`}
+      title="Copy all groups as a single OR parenthetical"
+    >
+      {copied ? 'Copied!' : 'Copy All'}
+    </button>
+  );
+}
+
 interface CollapsibleClusterProps {
   cluster: Cluster;
   defaultExpanded?: boolean;
@@ -11,6 +56,7 @@ interface CollapsibleClusterProps {
 
 function CollapsibleCluster({ cluster, defaultExpanded = false }: CollapsibleClusterProps) {
   const [expanded, setExpanded] = useState(defaultExpanded);
+  const groupCount = cluster.groups?.length ?? 0;
 
   return (
     <div>
@@ -28,6 +74,11 @@ function CollapsibleCluster({ cluster, defaultExpanded = false }: CollapsibleClu
         }`}>
           {cluster.label}
         </span>
+        {groupCount >= 2 && (
+          <span className="ml-auto">
+            <CopyAllButton cluster={cluster} />
+          </span>
+        )}
       </div>
 
       {expanded && (
