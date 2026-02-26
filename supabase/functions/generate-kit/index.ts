@@ -68,7 +68,7 @@ serve(async (req) => {
       },
       body: JSON.stringify({
         model: 'claude-opus-4-5-20251101',
-        max_tokens: 16000,
+        max_tokens: 32000,
         system: [
           {
             type: 'text',
