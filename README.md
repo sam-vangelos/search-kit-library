@@ -14,15 +14,15 @@ A team-wide boolean sourcing repository where recruiters can generate, browse, s
 
 3. **Favorite** — Email-based favorites persist across devices. No login required — enter your email once and your favorites follow you.
 
-4. **Source** — Expand any kit to see its full hierarchy: archetypes (candidate personas with recipes), blocks (competency domains), and boolean term groups organized by Recall/Precision signals. Copy any boolean string with one click.
+4. **Source** — Expand any kit to see its full hierarchy: archetypes (candidate personas with recipes), blocks (competency domains), and boolean term groups organized by Recall/Precision signals. Copy any group with one click, or use **Copy All** on a cluster header to get all groups flattened into a single OR parenthetical.
 
 5. **Evaluate** — "Evaluate Leads" generates a screening prompt from the kit + JD + intake notes, ready to paste into Claude or ChatGPT for batch candidate evaluation.
 
 ---
 
-## Boolean Construction Template v6.0
+## Boolean Construction Template v6.1
 
-The generation engine uses a structured methodology:
+The generation engine uses a structured methodology, field-tested and refined through live sourcing runs (115 strings across Brazil and Colombia).
 
 ### Kit Structure
 
@@ -55,6 +55,25 @@ Every group must pass a signal test:
 - **Recall test:** "Does this anchor me to the right population?"
 - **Precision test:** "Does this confirm specific expertise that distinguishes specialists?"
 
+### LinkedIn Search Behavior
+
+The prompt is built around three properties of LinkedIn Recruiter search:
+
+1. **Case-insensitive** — "AgentBench" and "agentbench" return identical results. Case-only variants are never included.
+2. **No stemming** — "model" and "models" are different tokens. Every morphological variant (plural, past tense, gerund, US/UK spelling) must be included as a separate OR term.
+3. **Substring-embedded** — "reward model" matches any profile containing "reward model development." Superstrings of existing terms are never added.
+
+### v6.1 Quality Rules
+
+Four rules introduced after field testing:
+
+| Rule | What It Does |
+|------|-------------|
+| **Case deduplication** | Removes variants that differ only by capitalization |
+| **Disambiguation** | Bare single-word terms with dominant non-ML meanings (trajectory, alignment, agent) are replaced with qualified compound forms ("agent trajectory," "AI alignment") |
+| **Abbreviation filter** | Abbreviations with more common non-ML meanings (IPO, ORM, CAI) are replaced with spelled-out forms, unless paired with their expansion in the same OR group |
+| **Lexical expansion** | Every group is checked for missing morphological variants before output. Tool/library names are treated as proper nouns — fabricated compound expansions are prohibited. |
+
 ### Blacklist (Never Included)
 
 Universal infrastructure (PyTorch, Docker, AWS), generic ML terms (machine learning, transformer), user tools (GitHub Copilot, LangChain), and buzzwords (AI-powered, generative AI) are excluded — they dilute search results.
@@ -74,11 +93,11 @@ search-kit-library/
 │   ├── components/
 │   │   ├── KitCard.tsx                  # Kit preview card
 │   │   ├── ArchetypeAccordion.tsx       # Collapsible archetype display
-│   │   ├── BlockSection.tsx             # Block with nested sub-blocks/clusters
+│   │   ├── BlockSection.tsx             # Block with nested sub-blocks/clusters + Copy All
 │   │   ├── ClusterRow.tsx               # Term groups with copy buttons
 │   │   ├── SearchBar.tsx                # Search input
 │   │   ├── FavoriteButton.tsx           # Heart toggle
-│   │   ├── CopyButton.tsx              # Copy-to-clipboard with feedback
+│   │   ├── CopyButton.tsx               # Copy-to-clipboard with feedback
 │   │   ├── EmailPromptModal.tsx         # First-visit email capture
 │   │   ├── EvaluateLeadsButton.tsx      # Screening prompt generator
 │   │   └── InfoModal.tsx                # Help/guide modal
@@ -89,15 +108,15 @@ search-kit-library/
 │   └── functions/
 │       └── generate-kit/
 │           ├── index.ts                 # Edge Function handler
-│           └── prompt.ts                # Boolean Construction Template v6.0
+│           └── prompt.ts                # Boolean Construction Template v6.1
 ```
 
 ### Generation Flow
 
 1. User submits JD on `/generate`
 2. POST to Supabase Edge Function
-3. Edge Function calls Claude Opus 4.5 with Boolean IDE v6.0 prompt (cached)
-4. Claude generates JSON matching kit schema (blocks first, then archetypes)
+3. Edge Function calls Claude Opus 4.5 with Boolean IDE v6.1 prompt (prompt-cached)
+4. Claude generates JSON matching kit schema (blocks first, then archetypes); max 32,000 output tokens
 5. Kit stored in Supabase `search_kits` table
 6. Redirect to `/kit/[id]`
 
@@ -202,7 +221,7 @@ Open [http://localhost:3000](http://localhost:3000).
 1. Browse or search for a kit in the library
 2. Review **Archetypes** for recommended search strategies
 3. Expand **Search Library** clusters to see boolean groups
-4. Click any group to copy the boolean string
+4. Click any group to copy that boolean string, or click **Copy All** on a Recall/Precision header to copy all groups in that cluster as a single flat OR parenthetical
 5. Paste into LinkedIn Recruiter — combine groups with AND for tighter searches
 
 ### Evaluating Leads
@@ -218,7 +237,8 @@ Open [http://localhost:3000](http://localhost:3000).
 
 | Version | Date | Changes |
 |---------|------|---------|
-| 6.0 | Feb 2026 | Signal-based generation; Recall/Precision clusters replace Broad/Established/Recent/Specific |
+| 6.1 | Feb 2026 | Case deduplication, disambiguation qualifiers, abbreviation collision filter, mandatory lexical expansion self-review, Copy All cluster button |
+| 6.0 | Jan 2026 | Signal-based generation; Recall/Precision clusters replace Broad/Established/Recent/Specific |
 | 5.x | Jan 2026 | Volume-based generation with temporal clusters |
 
 ---
