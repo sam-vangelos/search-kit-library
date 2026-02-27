@@ -1,6 +1,8 @@
-export const BOOLEAN_IDE_PROMPT = `# Boolean Construction Template v6.0 — JSON Output
+export const BOOLEAN_IDE_PROMPT = `# Boolean Construction Template v6.1 — JSON Output
 
-**Version:** 6.0 · January 2026 · Sam Vangelos
+**Version:** 6.1 · February 2026 · Sam Vangelos
+
+**What changed in v6.1:** Four quality amendments from field testing (115 strings, 13.9% productive in Brazil, 7% in Colombia). Case-only variants eliminated. Bare generic terms require disambiguation qualifiers. Collision-prone abbreviations filtered. Mandatory lexical expansion pass added as final step.
 
 **What changed in v6:** Signal-based gating replaces volume requirements. No minimums. Clusters are precision-based (Recall/Precision) not temporal (Broad/Established/Recent/Specific). Each group is a semantic neighborhood (one concept + its variants). LinkedIn search behavior informs variant construction.
 
@@ -15,6 +17,7 @@ Generate a **complete JSON object** for Boolean sourcing from the job descriptio
 2. Apply the signal test to every group (Section B)
 3. Follow the generation workflow in Section C (generate blocks BEFORE archetypes)
 4. Output valid JSON matching the schema in Section D
+5. Execute the mandatory self-review in Section F BEFORE producing output
 
 **You must not:**
 - Include any group that fails the signal test
@@ -39,7 +42,7 @@ Generate a **complete JSON object** for Boolean sourcing from the job descriptio
 \`\`\`
 Block (domain/competency)
 └── Sub-block (Concepts / Methods / Tools)
-    └── Cluster (Core / Narrow)
+    └── Cluster (Recall / Precision)
         └── Group (semantic neighborhood — one concept + its variants)
 \`\`\`
 
@@ -76,8 +79,8 @@ Two cluster types based on search precision:
 
 | Cluster | Purpose | What belongs |
 |---------|---------|--------------|
-| **Recall** | Broad anchors that get you to the right cohort | General terms that identify the population (e.g., "agent", "RLHF", "data annotation") |
-| **Precision** | Specific/jargony terms that filter to a subset | Niche tools, benchmarks, techniques that confirm deep expertise (e.g., "SWE-agent", "trajectory", "annotation rubric") |
+| **Recall** | Broad anchors that get you to the right cohort | General terms that identify the population |
+| **Precision** | Specific/jargony terms that filter to a subset | Niche tools, benchmarks, techniques that confirm deep expertise |
 
 **How recruiters use these:**
 - **Recall alone** = "Show me everyone in this space" (high volume, some noise)
@@ -95,8 +98,8 @@ Each group is ONE concept plus its necessary variants. Groups are the atomic cop
 ✅ Right — one concept with variants:
 \`\`\`
 ("RLHF" OR "reinforcement learning from human feedback")
-("SWE-bench" OR "SWE bench" OR "swebench" OR "SWE-Bench")
-("reward model" OR "reward modeling")
+("SWE-bench" OR "SWE bench" OR "swebench")
+("reward model" OR "reward models" OR "reward modeling" OR "reward modelling")
 \`\`\`
 
 ❌ Wrong — multiple concepts jammed together:
@@ -105,38 +108,71 @@ Each group is ONE concept plus its necessary variants. Groups are the atomic cop
 \`\`\`
 These are three different concepts. They should be three separate groups.
 
-**LinkedIn search behavior — what to include in a group:**
+### A.6 LinkedIn Search Behavior — Mandatory Variant Rules
 
-LinkedIn Recruiter search is case-insensitive but does NOT stem. Every character difference is a different search token — plurals ("model" vs "models"), tenses ("fine-tuning" vs "fine-tuned"), and truncations ("evaluation" vs "evals") are all separate tokens that must be included as OR variants. Do NOT include case-only variants — those are truly redundant.
+LinkedIn Recruiter search has two critical properties that govern how you construct every OR group:
 
-DO include:
+**Property 1: Case-insensitive.** "AgentBench" and "agentbench" return identical results. "RLHF" and "rlhf" return identical results. Case-only variants waste OR slots and add no coverage.
 
-1. **Acronym + expansion** — if people use both forms
-   - ("RLHF" OR "reinforcement learning from human feedback")
-   - ("DPO" OR "direct preference optimization")
+**Property 2: NOT stemming.** Every character difference is a different search token. "model" does NOT match "models." "fine-tuning" does NOT match "fine-tuned." "evaluation" does NOT match "evals."
 
-2. **Spacing/hyphenation variants** — LinkedIn treats these as different strings
-   - ("SWE-bench" OR "SWE bench" OR "swebench" OR "SWE-Bench")
-   - ("lm-eval-harness" OR "lm-eval" OR "lm_eval")
+**Property 3: Substring-embedded.** "reward model" DOES match any profile containing "reward model development" because the exact character sequence is embedded. But "reward model" does NOT match "reward models" — the trailing "s" makes it a different token.
 
-3. **Fundamentally different phrasings** — noun vs verb, different word order
-   - ("reward model" OR "reward modeling")
-   - ("instruction tuning" OR "instruction-tuned")
+**These three properties together dictate exactly what goes into each OR group:**
 
-4. **Validated colloquial alternatives** — only terms practitioners actually use
-   - ("trajectory" OR "rollout" OR "episode")
-   - ("rater" OR "annotator" OR "labeler")
+INCLUDE (each is a different search token):
+- Plurals: "reward model" AND "reward models"
+- Tenses: "fine-tuning" AND "fine-tuned" AND "fine-tune"
+- Gerunds: "reward modeling" AND "reward modelling" (US/UK)
+- Truncations practitioners use: "evals" for "evaluations," "env" for "environment"
+- Spacing/hyphenation: "SWE-bench" AND "SWE bench" AND "swebench"
+- Acronym + expansion: "RLHF" AND "reinforcement learning from human feedback"
+- Genuinely different phrasings: "reward model" AND "reward signal"
 
-Do NOT include:
-- Case variants (handled automatically by LinkedIn)
-- Speculative phrasings you haven't validated
-- Theoretical expansions no one actually writes
+NEVER INCLUDE (redundant, zero additional coverage):
+- Case-only variants: "AgentBench" vs "agentbench" — identical on LinkedIn
+- Superstrings of existing terms: if you have "reward model," do NOT add "reward model training" — the shorter string already matches it
 
-**Case-insensitivity reminder:** LinkedIn Recruiter search is case-insensitive. Never include variants that differ only by capitalization. ("AgentBench" OR "agentbench") is redundant — they return identical results. Use OR slots exclusively for genuine lexical variants: alternate spellings, hyphenation differences, abbreviations, or different phrasings. Every OR slot is valuable real estate.
+**Self-check:** Before finalizing any OR group, verify: does every term differ from every other term by more than just capitalization? If two terms are identical ignoring case, delete one.
 
-**Group labels:** 1-4 words describing the concept (e.g., "RLHF Training", "Code Benchmarks", "Preference Methods")
+### A.7 Disambiguation — No Bare Generic Terms
 
-**No minimum, but be exhaustive.** A cluster might have 3 groups or 15. Generate ALL groups that pass the signal test — especially in Precision clusters where the long tail surfaces exceptional talent.
+A bare single-word term that has a dominant non-technical meaning on LinkedIn MUST NOT appear in any OR group unless it is qualified into a compound phrase.
+
+**The test:** Imagine a recruiter pastes this single word into LinkedIn Recruiter search with no other filters. Would the majority of returned profiles be using the term in a non-ML/AI context? If yes, the bare form fails.
+
+**How to fix it:** Replace the bare term with only its qualified compound forms.
+
+Wrong: \`("alignment" OR "AI alignment" OR "model alignment")\`
+The bare "alignment" matches organizational alignment, wheel alignment, spinal alignment, strategic alignment. It dominates the results with noise.
+
+Right: \`("AI alignment" OR "model alignment" OR "LLM alignment")\`
+Every form is qualified. A recruiter copying this string gets signal, not noise.
+
+**Common traps in ML/AI sourcing — these words MUST be qualified:**
+Single words like trajectory, episode, agent, alignment, grounding, planning, reflection, oracle, sandbox, rollout, simulation, curriculum, exploration — all have dominant everyday meanings on LinkedIn. Use only compound forms: "agent trajectory," "RL episode," "AI agent," "model alignment," "visual grounding," "agent planning," "self-reflection agent," "RL exploration," etc.
+
+This is principle-based: the list above is illustrative, not exhaustive. Apply the test to every single-word term you generate.
+
+### A.8 Abbreviation Collision Filter
+
+An abbreviation or acronym MUST NOT appear as a standalone OR term if the abbreviation has a more common meaning in general business, software engineering, or professional contexts than it does in the target ML/AI domain.
+
+**The test:** On LinkedIn, does this abbreviation primarily return people using it in a non-ML context?
+
+- "IPO" → Initial Public Offering (finance) vastly outnumbers Identity Preference Optimization. FAIL — use only "identity preference optimization"
+- "ORM" → Object-Relational Mapping (software engineering) vastly outnumbers Outcome Reward Model. FAIL — use only "outcome reward model"
+- "CAI" → various non-ML meanings dominate. FAIL — use only "constitutional AI"
+- "PPO" → Preferred Provider Organization (healthcare/insurance). Borderline — but "proximal policy optimization" is safer alone in most markets
+- "QC" → Quality Control in manufacturing. FAIL when used alone — use "data quality" or "annotation quality" compounds
+- "RLHF" → No dominant non-ML meaning. PASS — safe to use as abbreviation
+- "DPO" → Data Protection Officer in EU/LATAM markets. This is a MARKET-SPECIFIC collision, not a universal one. The prompt does not address market-specific collisions — those are regional filtering decisions, not generation decisions. DPO is acceptable as a standalone abbreviation.
+- "SWE-bench" → No collision. PASS.
+- "GRPO," "RLVR," "KTO," "ORPO" → Sufficiently niche, no dominant alternatives. PASS.
+
+**The paired-expansion exception:** An abbreviation that would fail alone IS acceptable when it appears in the same OR group as its full expansion, because the group as a whole disambiguates when AND-combined with other blocks. Example: \`("DPO" OR "direct preference optimization")\` — the DPO here is acceptable because the group's semantic intent is clear from the expansion.
+
+**When in doubt, spell it out.** Dropping a colliding abbreviation costs nothing — the spelled-out form captures everyone who matters. Including it adds noise.
 
 ---
 
@@ -151,14 +187,15 @@ Every group must pass a signal test before inclusion. The test differs by cluste
 Recall groups are broad. They cast a net around the cohort. They should return people who are plausibly in the right space, even if not all are perfect fits.
 
 **Pass examples:**
-- \`("agent" OR "agentic" OR "AI agent")\` → Returns agent builders, researchers, engineers ✅
+- \`("AI agent" OR "AI agents" OR "LLM agent" OR "LLM agents")\` → Returns agent builders ✅
 - \`("RLHF" OR "reinforcement learning from human feedback")\` → Returns post-training practitioners ✅
-- \`("data annotation" OR "data labeling")\` → Returns annotation/labeling specialists ✅
+- \`("data annotation" OR "data labeling" OR "data labelling")\` → Returns annotation specialists ✅
 
 **Fail examples:**
 - \`("machine learning")\` → Too broad, returns everyone in ML ❌
 - \`("Python")\` → Returns all of software engineering ❌
-- \`("automation")\` → Returns RPA, DevOps, marketing ops ❌
+- \`("agent")\` → Returns real estate agents, insurance agents, travel agents ❌ (use "AI agent" or "LLM agent")
+- \`("alignment")\` → Returns organizational alignment, strategic alignment ❌ (use "AI alignment" or "model alignment")
 
 ### B.2 Precision Cluster Test
 
@@ -167,14 +204,14 @@ Recall groups are broad. They cast a net around the cohort. They should return p
 Precision groups are narrow. They filter to a subset. Someone with these terms has demonstrable depth in this specific area.
 
 **Pass examples:**
-- \`("SWE-agent" OR "SWE agent" OR "sweagent")\` → Specific tool, only builders know it ✅
-- \`("trajectory" OR "rollout" OR "episode")\` → RL jargon, confirms hands-on experience ✅
-- \`("annotation rubric" OR "quality rubric")\` → Specific practice, signals depth ✅
+- \`("SWE-bench" OR "SWE bench" OR "swebench")\` → Specific benchmark, only builders know it ✅
+- \`("agent trajectory" OR "agent trajectories" OR "trajectory data")\` → RL-specific jargon ✅
+- \`("annotation rubric" OR "annotation rubrics" OR "rating rubric")\` → Specific practice ✅
 
 **Fail examples:**
-- \`("agent")\` → Too broad for Precision, belongs in Recall ❌
-- \`("code" OR "coding")\` → Everyone codes, not a distinguishing signal ❌
-- \`("best practices")\` → Meaningless fluff ❌
+- \`("trajectory")\` → Matches career trajectory on every profile ❌ (use "agent trajectory")
+- \`("episode")\` → Matches TV episodes, podcast episodes ❌ (use "RL episode" or "training episode")
+- \`("code" OR "coding")\` → Everyone codes ❌
 
 ### B.3 Exhaustiveness — Capture the Long Tail
 
@@ -220,14 +257,6 @@ GitHub Copilot, Cursor, Tabnine, CodeWhisperer, ChatGPT, Claude (product), Gemin
 **Buzzwords:**
 AI-powered, intelligent automation, cutting-edge, innovative, data-driven, next-generation, state-of-the-art, generative AI (alone), autonomous (alone), automation (alone)
 
-### B.5 Disambiguation — Generic Terms
-
-Do not include bare single-word terms that have a dominant non-technical meaning. If a term is commonly used outside ML/AI to describe everyday professional activities, company names, or general concepts, use only qualified compound phrases that anchor to the technical meaning. For example: ("AI alignment" OR "model alignment") not ("alignment" OR "AI alignment" OR "model alignment"). Before including any single-word term, consider whether a recruiter searching it on LinkedIn would primarily find professionals using it in a non-ML context. If yes, use only the compound form.
-
-### B.6 Abbreviation Collisions
-
-Do not include abbreviations or acronyms where the abbreviation has a more common meaning in general business, software engineering, or everyday language than it does in the specific ML/AI domain being targeted. Before including any abbreviation, consider whether a recruiter searching that abbreviation on LinkedIn would primarily find professionals using it in a non-ML context. If yes, include only the spelled-out form. If the abbreviation is paired with its full expansion in the same OR group, it is acceptable because the group as a whole disambiguates when combined with other blocks.
-
 ---
 
 ## Section C: Generation Workflow
@@ -245,8 +274,8 @@ For each domain:
 1. Create Block with title
 2. Generate Sub-blocks (Concepts, Methods, Tools) — only those with signal-passing content
 3. Each Sub-block gets clusters:
-   - Core (required if sub-block exists)
-   - Narrow (optional, only if useful for AND-tightening)
+   - Recall (optional — only if signal-passing broad anchors exist)
+   - Precision (optional — only if signal-passing specific terms exist)
 4. Each Cluster contains groups — as many as pass the signal test
 
 **Comprehensive, not padded.** Include all signal-passing groups that exist — don't stop at 3-4 if 10+ exist. But never pad with generic terms just to increase volume.
@@ -271,7 +300,7 @@ Output a single JSON object matching this exact structure:
 
 \`\`\`json
 {
-  "version": "6.0",
+  "version": "6.1",
   "role_title": "string — the role title",
   "role_summary": "string — 2-3 sentence description of the role",
   "role_details": {
@@ -287,7 +316,7 @@ Output a single JSON object matching this exact structure:
       "recipe": [
         {
           "block": "string — block title",
-          "components": "string — e.g., 'Methods (Core) + Tools (Core)'"
+          "components": "string — e.g., 'Methods (Recall) + Tools (Precision)'"
         }
       ],
       "why": "string — explanation of combinatorial signal (2-4 sentences)"
@@ -360,8 +389,8 @@ Output a single JSON object matching this exact structure:
 - Each group has a "label" (1-4 words) and "terms" (Boolean parenthetical)
 - Each "terms" field must be a complete Boolean parenthetical like: ("term1" OR "term2" OR "term3")
 - Groups within a cluster must be mutually exclusive (no overlapping terms)
-- Core cluster is required for each sub-block; Narrow is optional
 - Sub-blocks are optional — omit if no signal-passing content
+- Clusters within a sub-block are optional — omit Recall or Precision if no content passes the test
 - 2-4 archetypes with complete WHY explanations
 - Every group must pass the signal test — no padding
 
@@ -376,24 +405,31 @@ Output a single JSON object matching this exact structure:
 Sub-block: Methods
 - Cluster: Recall (broad anchors)
   - Group: "RLHF" → ("RLHF" OR "reinforcement learning from human feedback")
-  - Group: "Preference Training" → ("preference learning" OR "preference optimization")
-  - Group: "Fine-tuning" → ("instruction tuning" OR "SFT" OR "supervised fine-tuning")
+  - Group: "Preference Training" → ("preference learning" OR "preference optimization" OR "preference training")
+  - Group: "Instruction Tuning" → ("instruction tuning" OR "instruction-tuning" OR "instruction-tuned" OR "instruct tuning")
+  - Group: "Supervised Fine-tuning" → ("supervised fine-tuning" OR "supervised fine tuning" OR "supervised fine-tuned")
 - Cluster: Precision (specific signals)
   - Group: "DPO" → ("DPO" OR "direct preference optimization")
-  - Group: "Constitutional AI" → ("constitutional AI" OR "CAI" OR "RLAIF")
-  - Group: "Reward Modeling" → ("reward model" OR "reward modeling" OR "reward signal")
+  - Group: "Constitutional AI" → ("constitutional AI" OR "RLAIF" OR "reinforcement learning from AI feedback")
+  - Group: "Reward Modeling" → ("reward model" OR "reward models" OR "reward modeling" OR "reward modelling" OR "reward signal" OR "reward signals")
 
 Sub-block: Tools
 - Cluster: Recall
-  - Group: "Training Libraries" → ("training library" OR "fine-tuning framework")
+  - Group: "Training Libraries" → ("training library" OR "training libraries" OR "fine-tuning framework" OR "fine-tuning frameworks")
 - Cluster: Precision
-  - Group: "TRL" → ("TRL" OR "Transformer Reinforcement Learning")
-  - Group: "Axolotl" → ("Axolotl" OR "axolotl-ai")
-  - Group: "OpenRLHF" → ("OpenRLHF" OR "Open RLHF")
+  - Group: "TRL" → ("TRL" OR "Transformer Reinforcement Learning" OR "trl library")
+  - Group: "Axolotl" → ("axolotl-ai" OR "axolotl training")
+  - Group: "OpenRLHF" → ("OpenRLHF" OR "Open RLHF" OR "open-rlhf")
 
 **Why this split:**
 - Recall: "RLHF", "preference learning", "instruction tuning" are broad terms that anyone in post-training uses
 - Precision: "DPO", "constitutional AI", "TRL", "Axolotl" are specific enough that they confirm hands-on depth
+
+**Notice how the v6.1 rules apply in this example:**
+- Case: "Axolotl" and "axolotl" would be redundant — only spacing/hyphenation variants included ("axolotl-ai", "axolotl training")
+- Disambiguation: "constitutional AI" not bare "constitutional"; "reward model" not bare "reward"
+- Abbreviation: "CAI" omitted (common non-ML meanings) — only "constitutional AI" kept. "RLAIF" kept (no dominant collision). "DPO" kept with paired expansion.
+- Expansion: "reward model" includes "reward models" (plural), "reward modeling"/"reward modelling" (gerund + UK spelling), "reward signal"/"reward signals" (alternate phrasing + plural)
 
 **Archetype Example:**
 
@@ -408,25 +444,54 @@ WHY: Anyone can claim "RLHF experience." But mentions of DPO, constitutional AI,
 
 ---
 
-## Section F: Lexical Expansion Pass
+## Section F: Mandatory Self-Review
 
-Before producing your final output, review every boolean group in the kit and expand it with additional lexical variants. For each group, consider:
+Before producing your final JSON output, execute these four checks on every group in the kit. This is not optional — skipping this step produces kits that fail in the field.
 
-**1. MORPHOLOGICAL VARIANTS:** LinkedIn Recruiter treats every character difference as a different search token. "fine-tuning" does NOT match "fine-tuned." "environment" does NOT match "environments." "evaluation" does NOT match "evals." Include all relevant forms:
-- Plurals: "reward model" → also include "reward models"
-- Past tense: "fine-tuning" → also include "fine-tuned"
-- Present participle where the base form is a noun: "reward modeling" alongside "reward model"
-- Truncations practitioners actually use: "evals" for "evaluations," "env" for "environment," "infra" for "infrastructure"
+### F.1 Case Deduplication Check
 
-**2. PROFILE-VOICE PHRASINGS:** The kit should include terms as practitioners write them on LinkedIn profiles, not just how they appear in papers or job descriptions. Someone describes their work in past tense ("fine-tuned LLaMA," "built RLHF pipelines," "designed reward functions") or present participle ("building RL environments," "training reward models"). Include these verb-form variants.
+Scan every OR group. For each pair of terms in the group, check: do these terms differ ONLY by capitalization? If yes, delete one. Keep whichever form practitioners most commonly write.
 
-**3. ALTERNATE PHRASINGS:** Different word orderings and rephrasings that mean the same thing.
-- "human preference learning" vs "learning from human preferences"
-- "reinforcement learning from human feedback" vs "human feedback reinforcement learning"
+Violations look like:
+- ("AgentBench" OR "Agent Bench" OR "agentbench") — "AgentBench" and "agentbench" are case-only duplicates. Fix: ("AgentBench" OR "Agent Bench")
+- ("MuJoCo" OR "mujoco" OR "Mujoco") — three case variants of the same word. Fix: ("MuJoCo")
+- ("Brax" OR "brax" OR "Google Brax") — "Brax" and "brax" are case-only duplicates. Fix: ("Brax" OR "Google Brax")
+- ("OpenHands" OR "Open Hands" OR "openhands") — "OpenHands" and "openhands" differ only by case. Fix: ("OpenHands" OR "Open Hands")
 
-**4. EXACT-MATCH AWARENESS:** If your exact keyword appears character-for-character inside a longer phrase, LinkedIn already matches it — do not add the longer phrase. "reward model" already matches any profile containing "reward model development" or "reward model training" because the exact string is embedded. But if even one character differs — plurals, tenses, suffixes — LinkedIn treats it as a different search. Those must be added as separate OR terms.
+The ONLY reason two terms should differ by case is if they also differ by spacing, hyphenation, or spelling. "SWE-bench" and "swebench" differ by hyphenation AND case — that's a legitimate variant.
 
-There is no penalty for long OR strings. A group with 8 well-chosen variants is better than one with 3. Every variant you miss is a candidate you miss.
+### F.2 Disambiguation Check
+
+Scan every OR group for bare single-word terms. For each one, apply the test from A.7: would a LinkedIn search for this word alone primarily return non-ML profiles?
+
+If yes, either:
+(a) Remove the bare word and keep only compound forms, OR
+(b) If no compound forms exist in the group, add them and remove the bare form
+
+Do NOT leave the bare form alongside its compounds — that defeats the purpose. ("alignment" OR "AI alignment") is wrong because a sourcer might copy just the group and the bare term pollutes results.
+
+### F.3 Abbreviation Check
+
+Scan every OR group for standalone abbreviations (2-5 uppercase letters). For each one, apply the test from A.8: does this abbreviation have a more common non-ML meaning?
+
+If yes, and the abbreviation appears WITH its expansion in the same group, it's acceptable (the paired-expansion exception).
+If yes, and the abbreviation appears WITHOUT its expansion, remove it and include only the spelled-out form.
+
+### F.4 Lexical Expansion Check
+
+Scan every OR group and verify it includes all necessary morphological variants. For each root term, check:
+
+- Singular AND plural? ("reward model" AND "reward models")
+- Base AND past tense? ("fine-tuning" AND "fine-tuned")
+- Noun AND gerund? ("reward model" AND "reward modeling")
+- US AND UK spelling? ("modeling" AND "modelling", "labeling" AND "labelling")
+- Common truncations? ("evaluations" AND "evals", "environments" AND "envs")
+- Spacing/hyphenation variants? ("fine-tuning" AND "fine tuning" AND "finetuning")
+- Profile-voice verb forms practitioners actually write? ("built RLHF pipelines" → include "RLHF pipeline" AND "RLHF pipelines")
+
+Remember: there is no penalty for long OR strings. A group with 8 well-chosen variants is better than one with 3. Every missing variant is a missing candidate.
+
+But do NOT add superstrings of existing terms. If you have "reward model," do NOT add "reward model training" — the shorter string already matches it via substring embedding.
 
 ---
 
