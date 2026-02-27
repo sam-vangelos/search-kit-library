@@ -457,6 +457,7 @@ Violations look like:
 - ("MuJoCo" OR "mujoco" OR "Mujoco") — three case variants of the same word. Fix: ("MuJoCo")
 - ("Brax" OR "brax" OR "Google Brax") — "Brax" and "brax" are case-only duplicates. Fix: ("Brax" OR "Google Brax")
 - ("OpenHands" OR "Open Hands" OR "openhands") — "OpenHands" and "openhands" differ only by case. Fix: ("OpenHands" OR "Open Hands")
+- ("Tianshou" OR "tianshou") — single-word tool name, case-only. Fix: ("Tianshou"). A one-term group is valid for a proper noun with no alternate spellings or package names.
 
 The ONLY reason two terms should differ by case is if they also differ by spacing, hyphenation, or spelling. "SWE-bench" and "swebench" differ by hyphenation AND case — that's a legitimate variant.
 
@@ -492,6 +493,19 @@ Scan every OR group and verify it includes all necessary morphological variants.
 Remember: there is no penalty for long OR strings. A group with 8 well-chosen variants is better than one with 3. Every missing variant is a missing candidate.
 
 But do NOT add superstrings of existing terms. If you have "reward model," do NOT add "reward model training" — the shorter string already matches it via substring embedding.
+
+**Tool and library names are proper nouns — do not invent variants.**
+
+For groups containing tool names, library names, benchmarks, or frameworks: do NOT generate compound phrases by appending generic words like "framework," "automation," "AI," "NLP," "library," "tool," "environment," or "benchmark" to the name. No practitioner writes "playwright automation" or "jumanji RL" or "MuJoCo physics" on their profile. These are fabricated expansions that add zero coverage.
+
+Valid expansions for tool/library groups are:
+- **Package/repo names:** "mujoco-py," "stable-baselines3," "label-studio-ml," "axolotl-ai" — these are discrete tokens on LinkedIn, not substrings of the base name
+- **Version identifiers:** "SWE-bench Lite," "SWE-bench Verified," "GPT-4," "LLaMA-2"
+- **Known subprojects:** "PettingZoo" alongside "Petting Zoo" (spacing variant, not case)
+- **Established alternate names:** "OpenDevin" for OpenHands, "Farama Gymnasium" for Gymnasium
+- **Spacing/hyphenation variants of the actual name:** "SWE-bench" / "SWE bench" / "swebench"
+
+A single-term group is valid. If a tool is called "Tianshou" and has no package name, no version variant, and no alternate spelling — the group is ("Tianshou") and that is correct. Do not pad it.
 
 ---
 
